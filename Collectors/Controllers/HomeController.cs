@@ -1,6 +1,7 @@
 ﻿using Collectors.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Services.Client.AccountManagement;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,7 @@ namespace Collectors.Controllers
 
         public IActionResult Privacy()
         {
+            
             return View();
         }
 
