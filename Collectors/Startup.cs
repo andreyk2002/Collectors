@@ -46,8 +46,8 @@ namespace Collectors
                 })
                 .AddTwitter(options =>
                  {
-                     options.ConsumerKey = Configuration["Authentication:Twitter:AppId"];
-                     options.ConsumerSecret = Configuration["Authentication:Twitter:AppSecret"];
+                     options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                     options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
                  });
 
             services.AddControllersWithViews();
