@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Manage your collections</h2>
+<div class="toolbar mb-5">
+    <a asp-action="Create"><img src="~/bootstrap-icons/icons/plus.svg" /></a>add new collection
+</div>
+<div class="align-content-center">
+    @*@*@
+
+    @{
+        for (int i = 0; i < 10; i++)
+        {
+        <div class="card w-25 m-3 d-inline-block">
+            <a href="#"><img src="~/bootstrap-icons/icons/pencil.svg" /></a>
+            <a href="#"><img src="~/bootstrap-icons/icons/trash.svg" /></a>
+            <a href="pornhub.com">
+                <img class="card-img-top" src="~/img/coin-collection.jpg" alt="Card image cap">
+            </a>
+            <div class="card-body">
+                <h5 class="card-title">Name of the collection</h5>
+                <p class="card-text">Short description</p>
+                
+            </div>
+        </div>
+        }
+    }
+</div>
