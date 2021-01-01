@@ -1,4 +1,6 @@
 ﻿using Collectors.Models;
+using Collectors.Roles;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Services.Client.AccountManagement;
@@ -13,20 +15,33 @@ namespace Collectors.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly UserManager<IdentityUser> _userManager;
+        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> roleManager)
         {
             _logger = logger;
+            _userManager = roleManager;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+
+        //    return View();
+        //}
+
+        public async Task<IActionResult> IndexAsync()
         {
-            return View();
+            IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            if (currentUser != null)
+            {
+                if (_userManager.GetRolesAsync(currentUser).Result.Count == 0)
+                    await _userManager.AddToRoleAsync(currentUser, UserRoles.user.ToString());
+                ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
+            }
+            return View(currentUser);
         }
-
         public IActionResult Privacy()
         {
-            
+
             return View();
         }
 

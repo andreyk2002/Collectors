@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Collectors.Roles;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -97,7 +98,7 @@ namespace Collectors.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
+                    await _userManager.AddToRoleAsync(user, UserRoles.user.ToString());
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -108,18 +109,14 @@ namespace Collectors.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+            
 
-                IdentityRole role = await _roleManager.FindByNameAsync("user");
-                if(role == null)
-                      await _roleManager.CreateAsync(new IdentityRole("user"));
-                await _userManager.AddToRoleAsync(user, "user");
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
