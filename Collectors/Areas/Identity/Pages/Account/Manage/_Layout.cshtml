@@ -1,4 +1,8 @@
-﻿@{
+﻿
+@using Collectors;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer;
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
     {
         Layout = (string)parentLayout;
@@ -9,7 +13,7 @@
     }
 }
 
-<h2>Manage your account</h2>
+<h2>@SharedLocalizer["ManageAccount"]</h2>
 
 <div>
     <hr />
@@ -17,7 +21,7 @@
         <div class="col-md-3">
             <partial name="_ManageNav" />
         </div>
-        <div class="col-md-9">
+        <div class="white col-md-9">
             @RenderBody()
         </div>
     </div>

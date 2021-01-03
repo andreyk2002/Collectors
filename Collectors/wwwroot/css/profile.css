@@ -1,0 +1,15 @@
+﻿.darkmode--activated .white {
+    color: white;
+}
+
+.darkmode--activated p {
+    color: aqua;
+}
+
+.darkmode--activated a :hover {
+    color: aqua;
+}
+
+.darkmode--activated a{
+    color: wheat;
+}

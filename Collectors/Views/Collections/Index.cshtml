@@ -3,10 +3,12 @@
 *@
 @{
 }
-
-<h2>Manage your collections</h2>
-<div class="toolbar mb-5">
-    <a asp-action="Create"><img src="~/bootstrap-icons/icons/plus.svg" /></a>add new collection
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IViewLocalizer Localizer;
+<h2>@Localizer["Manage collections"]</h2>
+<div class="toolbar mb-5 p-2 darkmode-ignore" style="background-color:cornflowerblue">
+    <a asp-action="Create"><img src="~/bootstrap-icons/icons/plus-circle.svg" />
+        </a>@Localizer["add new collection"] 
 </div>
 <div class="align-content-center">
     @*@*@
@@ -14,18 +16,17 @@
     @{
         for (int i = 0; i < 10; i++)
         {
-        <div class="card w-25 m-3 d-inline-block">
-            <a href="#"><img src="~/bootstrap-icons/icons/pencil.svg" /></a>
-            <a href="#"><img src="~/bootstrap-icons/icons/trash.svg" /></a>
-            <a href="pornhub.com">
-                <img class="card-img-top" src="~/img/coin-collection.jpg" alt="Card image cap">
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">Name of the collection</h5>
-                <p class="card-text">Short description</p>
-                
+            <div class="card w-25 m-3 d-inline-block p-1 darkmode-ignore" style="background-color:cornflowerblue">
+                <a href="#"><img src="~/bootstrap-icons/icons/pencil.svg" /></a>
+                <a href="#"><img src="~/bootstrap-icons/icons/trash.svg" /></a>
+                <a href="pornhub.com">
+                    <img class="card-img-top" src="~/img/coin-collection.jpg" alt="Card image cap">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">Name of the collection</h5>
+                    <p class="card-text">Short description</p>
+                </div>
             </div>
-        </div>
         }
     }
 </div>
