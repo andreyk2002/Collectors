@@ -117,7 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Add additional fields" xml:space="preserve">
+    <value>Добавить дополнительные поля</value>
+  </data>
+  <data name="Boolean fields" xml:space="preserve">
+    <value>Логические поля</value>
+  </data>
+  <data name="Collection theme" xml:space="preserve">
+    <value>Тематика коллекции</value>
+  </data>
   <data name="Create new collection" xml:space="preserve">
-    <value>Создайте новую коллекцию</value>
+    <value>Создать новую коллекцию</value>
+  </data>
+  <data name="Date fields" xml:space="preserve">
+    <value>Поля даты</value>
+  </data>
+  <data name="Drop your image here" xml:space="preserve">
+    <value>Перетащите изображение сюда</value>
+  </data>
+  <data name="Integer fields" xml:space="preserve">
+    <value>Числовые поля</value>
+  </data>
+  <data name="Oneline string fields" xml:space="preserve">
+    <value>Однострочные поля</value>
+  </data>
+  <data name="Short description" xml:space="preserve">
+    <value>Краткое описание</value>
+  </data>
+  <data name="Text fields" xml:space="preserve">
+    <value>Текстовые поля</value>
   </data>
 </root>

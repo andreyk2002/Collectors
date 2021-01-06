@@ -1,7 +1,55 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization;
+﻿@model CollectionCreateModel;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Collectors.Data.Classes;
 @inject IViewLocalizer Localizer;
 @{
+    List<String> themes = new List<string>();
+    var Themes = Enum.GetValues(typeof(CollectionTheme)).Cast<CollectionTheme>().Select(v => new SelectListItem
+    {
+        Text = v.ToString(),
+        Value = ((int)v).ToString()
+    }).ToList();
+    string[] fieldsTypes = { "Integer fields", "Oneline string fields", "Text fields", "Boolean fields", "Date fields" };
 }
-<h2>@Localizer["Create new collection"]</h2>
-<form>
+<link rel="stylesheet" src="~/css/createCollection.css" />
+<h2 class="text-center m-4">@Localizer["Create new collection"]</h2>
+<form method="post" enctype="multipart/form-data">
+    <textarea rows="5" cols="60" asp-for="@Model.ShortDescription" placeholder="@Localizer["Short description"]"></textarea>
+    <br />
+    <label class="text-center">@Localizer["Collection Theme"]:</label><br />
+    <select name="Theme" asp-for="@Model.CollectionTheme"
+            asp-items="@Themes" class="m-2" multiple></select>
+    <h3>@Localizer["Add additional fields"]</h3>
+    <div class="m-2">
+        @{
+
+            for (int i = 0; i < 15; i++)
+            {
+                if (i % 3 == 0)
+                {
+                    <h4>@Localizer[fieldsTypes[i / 3]]</h4>
+                }
+                <input class="form-text" type="text" asp-for="@Model.AdditionalFields[i]" />
+                <br />
+            }
+
+        }
+    </div>
+    <div class="m-3">
+        <label>@Localizer["Drop your image here"]р</label>
+        <input name="Image" type="file" class="form-control" />
+        @*<div id="uploadBlock" class="d-flex align-content-center justify-content-center"
+                 style="height:400px; width:400px; border:1px solid black">
+                @Localizer["Drop your image here"]
+            </div>
+            <br />
+            <img id="imageUpload" src="~/bootstrap-icons/icons/eye-fill.svg" class="d-none" />*@
+    </div>
+    <button id="createButton" class="btn-primary" type="submit">@Localizer["Create new collection"]</button>
 </form>
+
+@*@section scripts{
+        <script src="~/js/dragAndDrop.js">
+
+        </script>
+    }*@
