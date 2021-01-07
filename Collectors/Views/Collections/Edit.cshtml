@@ -1,5 +1,38 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+
 }
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Collectors.Models;
+@inject IViewLocalizer Localizer;
+@model CollectionEditModel; 
+
+<h2 class="text-center">Editing your collection</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
+    <textarea rows="5" cols="60" asp-for="@Model.ShortDescription" placeholder="@Localizer["Modify the description"]"></textarea>
+    <br />
+
+    <div class="float-left m-5 w-25">
+        <label>@Localizer["Change/Add the image of collection"]</label>
+        <input name="Image" type="file" class="form-control" />
+
+    </div>
+    <div class="float-right m-5 w-50">
+        <label>@Localizer["Old Image :"]</label>
+        @if (Model.OldImage != null)
+        {
+            <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.OldImage))" alt="@Localizer["View items"]" />
+        }
+        else
+        {
+            <p>Image not set</p>
+        }
+
+    </div>
+    <div class="buttons">
+        <button class="btn btn-primary" type="submit">@Localizer["Finish"]</button>
+        <button class="btn btn-primary" name="ShouldDeleteImage" value="true" type="submit">@Localizer["Delete image and finish"]</button>
+    </div>
+</form>
