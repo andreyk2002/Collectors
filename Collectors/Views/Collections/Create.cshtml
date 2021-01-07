@@ -3,12 +3,7 @@
 @using Collectors.Data.Classes;
 @inject IViewLocalizer Localizer;
 @{
-    List<String> themes = new List<string>();
-    var Themes = Enum.GetValues(typeof(CollectionTheme)).Cast<CollectionTheme>().Select(v => new SelectListItem
-    {
-        Text = v.ToString(),
-        Value = ((int)v).ToString()
-    }).ToList();
+    var themes = Enum.GetValues(typeof(CollectionTheme));
     string[] fieldsTypes = { "Integer fields", "Oneline string fields", "Text fields", "Boolean fields", "Date fields" };
 }
 <link rel="stylesheet" src="~/css/createCollection.css" />
@@ -16,11 +11,20 @@
 <form method="post" enctype="multipart/form-data">
     <textarea rows="5" cols="60" asp-for="@Model.ShortDescription" placeholder="@Localizer["Short description"]"></textarea>
     <br />
-    <label class="text-center">@Localizer["Collection Theme"]:</label><br />
-    <select name="Theme" asp-for="@Model.CollectionTheme"
-            asp-items="@Themes" class="m-2" multiple></select>
+    <div id="collection theme" class="mb-5">
+        <label class="text-center">@Localizer["Collection Theme"]:</label><br />
+        @{
+            foreach (var e in themes)
+            {
+                <input type="radio" asp-for="@Model.CollectionTheme" value="@e" />
+                @e
+                <br />
+            }
+        }
+    </div>
     <h3>@Localizer["Add additional fields"]</h3>
     <div class="m-2">
+
         @{
 
             for (int i = 0; i < 15; i++)
@@ -45,7 +49,7 @@
             <br />
             <img id="imageUpload" src="~/bootstrap-icons/icons/eye-fill.svg" class="d-none" />*@
     </div>
-    <button id="createButton" class="btn-primary" type="submit">@Localizer["Create new collection"]</button>
+    <button id="createButton" class="btn btn-primary" type="submit">@Localizer["Create new collection"]</button>
 </form>
 
 @*@section scripts{

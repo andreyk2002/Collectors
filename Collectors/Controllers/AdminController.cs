@@ -22,21 +22,24 @@ namespace Collectors.Controllers
         }
         public async Task<IActionResult> IndexAsync()
         {
-
-            var users = UserManager.Users;
-            List<UserModel> userInfo = new List<UserModel>();
-            foreach (var user in users)
-            {
-                string str = "";
-                foreach (var role in await UserManager.GetRolesAsync(user))
-                    str = (str == "") ? role.ToString() : str + " - " + role.ToString();
-                userInfo.Add(new UserModel { User = user, IsBlocked = await UserManager.IsLockedOutAsync(user), Role = str });
-            }
-            ViewBag.UsersInfo = userInfo;
+            List<UserModel> usersList = new List<UserModel>();
+            await AddUsersAsync(UserManager.Users, usersList);
+            ViewBag.Users = usersList;
             var model = new CheckboxListModel { Selected = new List<bool>() };
-            for (int i = 0; i < users.Count(); i++)
+            foreach(var e in usersList)
                 model.Selected.Add(false);
             return View(model);
+        }
+
+        private async Task AddUsersAsync(IQueryable<IdentityUser> users, List<UserModel> usersList)
+        {
+            foreach (var u in users)
+            {
+                string s = "";
+                foreach (var role in await UserManager.GetRolesAsync(u))
+                    s = (s == "") ? role.ToString() : s + " - " + role.ToString();
+                usersList.Add(new UserModel { User = u, IsBlocked = await UserManager.IsLockedOutAsync(u), Role = s });
+            }
         }
 
         [HttpPost]
@@ -93,13 +96,10 @@ namespace Collectors.Controllers
             for (int i = 0; i < users.Count; i++)
             {
                 if (model.Selected[i] && users[i].Id != currentUser.Id)
-                {
                     result.Add(users[i]);
-                }
             }
             return result;
         }
-
 
     }
 }

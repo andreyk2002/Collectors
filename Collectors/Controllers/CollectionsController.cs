@@ -31,10 +31,10 @@ namespace Collectors.Controllers
         }
         public IActionResult Index()
         {
-            var collections = User.IsInRole(UserRoles.admin.ToString()) ?
+           ViewBag.Collections = User.IsInRole(UserRoles.admin.ToString()) ?
             db.Collections.ToList() : db.Collections.Where(c =>
                 c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
-            return View(collections);
+            return View();
         }
 
         public IActionResult Create()
@@ -45,21 +45,48 @@ namespace Collectors.Controllers
         [HttpPost]
         public IActionResult Create(CollectionCreateModel model)
         {
-            Collection collection = new Collection
-            {
-                ShortDescription = model.ShortDescription,
-                ThemeId = (byte)model.CollectionTheme,
-                AdditionalItemsFields = string.Join(",", model.AdditionalFields),
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-            };
-            collection.SelectedFields = CountSelectedFileds(model.AdditionalFields);
-            SetImage(model.Image, collection);
+            Collection collection = CreateCollectionFromModel(model);
+            collection.SelectedFields = CreateMaskOfSelectedFields(model.AdditionalFields);
+            SetCollectionImageInBytes(model.Image, collection);
             db.Collections.Add(collection);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        private int CountSelectedFileds(IList<string> additionalFields)
+        private Collection CreateCollectionFromModel(CollectionCreateModel model)
+        {
+           return new Collection
+           {
+               ShortDescription = model.ShortDescription,
+               ThemeId = (byte)model.CollectionTheme,
+               AdditionalItemsFields = string.Join(",", model.AdditionalFields),
+               UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+           };
+        }
+
+        public IActionResult Delete(int id)
+        {
+            Collection c = db.Collections.First(c => c.Id == id);
+            if (c != null)
+                db.Collections.Remove(c);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            Collection c = db.Collections.First(c => c.Id == id);
+            if (c != null)
+                return View(c);
+            return NotFound();
+        }
+
+        public string ViewCollection(Collection collection)
+        {
+            return "Пшёл нахуй я нихуя не сделал";
+        }
+
+        private int CreateMaskOfSelectedFields(IList<string> additionalFields)
         {
             int mask = 0;
             for (int i = 0; i < additionalFields.Count; i++)
@@ -70,11 +97,10 @@ namespace Collectors.Controllers
             return mask;
         }
 
-        private void SetImage(IFormFile Image, Collection collection)
+        private void SetCollectionImageInBytes(IFormFile Image, Collection collection)
         {
             if (Image != null)
             {
-
                 byte[] imageData = null;
                 using (var binaryReader = new BinaryReader(Image.OpenReadStream()))
                 {

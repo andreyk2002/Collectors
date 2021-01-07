@@ -30,14 +30,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in ViewBag.UsersInfo)
+            @foreach (var e in ViewBag.Users)
             {
                 <tr>
                     <td><input type="checkbox" asp-for="Selected[i]" /></td>
-                    <td>@item.User.UserName</td>
-                    <td>@item.User.Email</td>
-                    <td>@item.IsBlocked</td>
-                    <td>@item.Role</td>
+                    <td>@e.User.UserName</td>
+                    <td>@e.User.Email</td>
+                    <td>@e.IsBlocked</td>
+                    <td>@e.Role</td>
                 </tr>
                 i++;
             }

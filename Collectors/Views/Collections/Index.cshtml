@@ -5,10 +5,10 @@
 @using Collectors.Data.Classes;
 @using Markdig;
 @inject IViewLocalizer Localizer;
-@model List<Collection>;
+@model Collection
 
 <h2>@Localizer["Manage collections"]</h2>
-<div class="toolbar mb-5 p-2 darkmode-ignore" style="background-color:cornflowerblue">
+<div class="toolbar mb-5 p-2 darkmode-ignore w-100" style="background-color:cornflowerblue">
     <a asp-action="Create">
         <img src="~/bootstrap-icons/icons/plus-circle.svg" />
     </a>@Localizer["add new collection"]
@@ -16,19 +16,29 @@
 <div class="align-content-center">
 
     @{
-        for (int i = 0; i < Model.Count; i++)
+        foreach (var element in ViewBag.Collections)
         {
+
             <div class="card m-3 d-inline-block p-1 w-50 darkmode-ignore" style="background-color:cornflowerblue;">
-                <a asp-action="Edit" asp-><img src="~/bootstrap-icons/icons/pencil.svg" /></a>
-                <a asp-action="Delete"><img src="~/bootstrap-icons/icons/trash.svg" /></a>
+                    <form>
+                        <input asp-for="Id" value="@element.Id" type="hidden" />
+                        <button type="submit" asp-action="Edit">
+                            <img src="~/bootstrap-icons/icons/pencil.svg" />
+                        </button>
+
+                        <button type="submit" asp-action="Delete">
+                            <img src="~/bootstrap-icons/icons/trash.svg" />
+                        </button>
+                    </form>
                 <a asp-action="View">
-                    <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model[i].Image))" alt="@Localizer["View items"]" />
+                    <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(element.Image))" alt="@Localizer["View items"]" />
                 </a>
                 <div class="card-body">
-                    <h5 class="card-title">Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(Model[i].ThemeId);</h5>
-                    @Html.Raw(Markdown.ToHtml(Model[i].ShortDescription))
+                    <h5 class="card-title">Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(element.ThemeId);</h5>
+                    @Html.Raw(Markdown.ToHtml(element.ShortDescription))
                 </div>
             </div>
         }
     }
+
 </div>

@@ -16,6 +16,7 @@ namespace Collectors.Models
         }
         [Required]
         [Display(Name = "Short description")]
+        [StringLength(1000)]
         public string ShortDescription { get; set; }
 
         [Required]

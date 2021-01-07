@@ -21,7 +21,7 @@ namespace Collectors
 {
     public class Startup
     {
-
+        private readonly CultureInfo[] supportedCultures = new[] {new CultureInfo("en"), new CultureInfo("ru") };
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,30 +31,44 @@ namespace Collectors
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            AddAuthentification(services);
+            AddDb(services);
+            AddIdentity(services);
+            services.AddRazorPages();
+            AddLocalization(services);
+            ConfigureCulture(services);
+
+        }
+
+        private void AddDb(IServiceCollection services)
+        {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+        }
 
+        private void AddIdentity(IServiceCollection services)
+        {
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             options.SignIn.RequireConfirmedAccount = false)
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+        }
 
-            services.AddAuthentication()
-                .AddFacebook(options =>
-                {
-                    options.AppId = Configuration["Authentication:Facebook:AppId"];
-                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                })
-                .AddTwitter(options =>
-                 {
-                     options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                     options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-                 });
-            services.AddRazorPages();
+        private void ConfigureCulture(IServiceCollection services)
+        {
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+        }
 
+        private void AddLocalization(IServiceCollection services)
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                     .AddViewLocalization()
                     .AddDataAnnotationsLocalization(options =>
@@ -62,22 +76,21 @@ namespace Collectors
                         options.DataAnnotationLocalizerProvider = (type, factory) =>
                             factory.Create(typeof(SharedResource));
                     });
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[]
+        }
+
+        private void AddAuthentification(IServiceCollection services)
+        {
+            services.AddAuthentication()
+                .AddFacebook(options =>
                 {
-
-                    new CultureInfo("en"),
-                     new CultureInfo("ru")
-                };
-
-
-                options.DefaultRequestCulture = new RequestCulture("en");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-
-            });
-
+                    options.AppId = Configuration["Authentication:Facebook:AppId"];
+                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                })
+                .AddTwitter(options =>
+                {
+                    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -95,15 +108,11 @@ namespace Collectors
                 app.UseHsts();
             }
             SetLocalization(app);
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -118,13 +127,6 @@ namespace Collectors
 
         private void SetLocalization(IApplicationBuilder app)
         {
-            var supportedCultures = new[]
-             {
-
-                new CultureInfo("en"),
-                 new CultureInfo("ru")
-            };
-
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("en"),

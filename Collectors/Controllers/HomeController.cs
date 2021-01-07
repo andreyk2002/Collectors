@@ -34,15 +34,20 @@ namespace Collectors.Controllers
             IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser != null)
             {
-                if (_userManager.GetRolesAsync(currentUser).Result.Count == 0)
+                if (!HasRole(currentUser))
                     await _userManager.AddToRoleAsync(currentUser, UserRoles.user.ToString());
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
             return View(currentUser);
         }
+
+        private bool HasRole(IdentityUser currentUser)
+        {
+            return _userManager.GetRolesAsync(currentUser).Result.Count != 0;
+        }
+
         public IActionResult Privacy()
         {
-
             return View();
         }
 
@@ -62,7 +67,6 @@ namespace Collectors.Controllers
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
-
             return LocalRedirect(returnUrl);
         }
     }
