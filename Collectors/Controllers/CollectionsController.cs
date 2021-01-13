@@ -19,15 +19,15 @@ namespace Collectors.Controllers
     [Authorize(Roles = "admin,user")]
     public class CollectionsController : Controller
     {
-        private ApplicationDbContext db;
-        private IWebHostEnvironment WebHost;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext db;
+        private readonly IWebHostEnvironment webHost;
+        private readonly UserManager<IdentityUser> userManager;
 
         public CollectionsController(ApplicationDbContext context, IWebHostEnvironment webHost, UserManager<IdentityUser> userManager)
         {
-            _userManager = userManager;
+            this.userManager = userManager;
             db = context;
-            WebHost = webHost;
+            this.webHost = webHost;
         }
         public IActionResult Index()
         {

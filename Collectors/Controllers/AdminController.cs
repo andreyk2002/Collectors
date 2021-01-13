@@ -15,19 +15,17 @@ namespace Collectors.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
-        private UserManager<IdentityUser> UserManager;
-        public AdminController(UserManager<IdentityUser> UserManager)
+        private readonly UserManager<IdentityUser> userManager;
+        public AdminController(UserManager<IdentityUser> userManager)
         {
-            this.UserManager = UserManager;
+            this.userManager = userManager;
         }
         public async Task<IActionResult> IndexAsync()
         {
             List<UserModel> usersList = new List<UserModel>();
-            await AddUsersAsync(UserManager.Users, usersList);
+            await AddUsersAsync(userManager.Users, usersList);
             ViewBag.Users = usersList;
-            var model = new CheckboxListModel { Selected = new List<bool>() };
-            foreach(var e in usersList)
-                model.Selected.Add(false);
+            var model = new CheckboxListModel { Selected = new List<bool>(new bool[usersList.Count]) };
             return View(model);
         }
 
@@ -35,7 +33,7 @@ namespace Collectors.Controllers
         public async Task<ActionResult> Delete(CheckboxListModel model)
         {
             foreach (var user in await GetSelectedUsers(model))
-                await UserManager.DeleteAsync(user);
+                await userManager.DeleteAsync(user);
             return RedirectToAction("Index");
         }
 
@@ -43,8 +41,8 @@ namespace Collectors.Controllers
         {
             foreach (var user in await GetSelectedUsers(model))
             {
-                await UserManager.SetLockoutEnabledAsync(user, true);
-                await UserManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+                await userManager.SetLockoutEnabledAsync(user, true);
+                await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
             }
 
             return RedirectToAction("Index");
@@ -53,8 +51,8 @@ namespace Collectors.Controllers
         {
             foreach (var user in await GetSelectedUsers(model))
             {
-                await UserManager.SetLockoutEnabledAsync(user, false);
-                await UserManager.ResetAccessFailedCountAsync(user);
+                await userManager.SetLockoutEnabledAsync(user, false);
+                await userManager.ResetAccessFailedCountAsync(user);
             }
             return RedirectToAction("Index");
         }
@@ -64,7 +62,7 @@ namespace Collectors.Controllers
             foreach (var user in await GetSelectedUsers(model))
             {
                 await DeleteAllRolesAsync(user);
-                await UserManager.AddToRoleAsync(user, UserRoles.admin.ToString());
+                await userManager.AddToRoleAsync(user, UserRoles.admin.ToString());
             }
             return RedirectToAction("Index");
         }
@@ -74,25 +72,25 @@ namespace Collectors.Controllers
             foreach (var u in users)
             {
                 string s = "";
-                foreach (var role in await UserManager.GetRolesAsync(u))
+                foreach (var role in await userManager.GetRolesAsync(u))
                     s = (s == "") ? role.ToString() : s + " - " + role.ToString();
-                usersList.Add(new UserModel { User = u, IsBlocked = await UserManager.IsLockedOutAsync(u), Role = s });
+                usersList.Add(new UserModel { User = u, IsBlocked = await userManager.IsLockedOutAsync(u), Role = s });
             }
         }
 
         public async Task DeleteAllRolesAsync(IdentityUser user)
         {
-            foreach (var role in await UserManager.GetRolesAsync(user))
+            foreach (var role in await userManager.GetRolesAsync(user))
             {
-                await UserManager.RemoveFromRoleAsync(user, role);
+                await userManager.RemoveFromRoleAsync(user, role);
             }
         }
 
         public async Task<IList<IdentityUser>> GetSelectedUsers(CheckboxListModel model)
         {
             var result = new List<IdentityUser>();
-            IdentityUser currentUser = await UserManager.GetUserAsync(HttpContext.User);
-            var users = UserManager.Users.ToList();
+            IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
+            var users = userManager.Users.ToList();
             for (int i = 0; i < users.Count; i++)
             {
                 if (model.Selected[i] && users[i].Id != currentUser.Id)

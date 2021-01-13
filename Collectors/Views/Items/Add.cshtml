@@ -2,13 +2,10 @@
 @using Collectors.Data.Classes;
 @model ItemAddModel;
 @inject IViewLocalizer Localizer;
-@{
-
-}
 
 <h2 class="text-center m-4">@Localizer["Add items to your collection"]</h2>
 <form method="post">
-    <input asp-for="@Model.Tags" id="tags" value="@string.Join(',',ViewBag.Tags)"/>
+    <input asp-for="@Model.Tags" id="tags" value="@string.Join(',',ViewBag.Tags)" type="hidden"/>
     <div class="mb-5">
         <label asp-for="@Model.Name" class="text-center">@Localizer["Item name"]:</label><br />
         <input asp-for="@Model.Name" type="text" />

@@ -13,12 +13,12 @@ namespace Collectors.Controllers
     public class ItemsController : Controller
     {
 
-        private ApplicationDbContext db;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext db;
+        private readonly UserManager<IdentityUser> userManager;
 
         public ItemsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            _userManager = userManager;
+            this.userManager = userManager;
             db = context;
         }
 
@@ -26,6 +26,18 @@ namespace Collectors.Controllers
         {
             ItemsListViewModel model = GetItemsListModel(id);
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ItemAddModel ia)
+        {
+            CollectionItem item = new CollectionItem
+            { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
+            //SetAdditionalFields(ia, item);
+            UpdateTags(ia.Tags);
+            db.Items.Add(item);
+            db.SaveChanges();
+            return View(GetItemsListModel(ia.CollectionId));
         }
 
         private List<string> GetFieldsNames(Collection c, List<int> indexes)
@@ -49,6 +61,21 @@ namespace Collectors.Controllers
             return View(model);
         }
 
+        public IActionResult Delete(ItemsListViewModel ia)
+        {
+            var items = GetItemsInCollection(ia.CollectionId);
+            for (int i = 0; i < items.Count; i++)
+                if (ia.Selected[i])
+                    db.Items.Remove(items[i]);
+            db.SaveChanges();
+            return Redirect("Index?id=" + ia.CollectionId);
+         
+        }
+
+        public IActionResult Edit(ItemsListViewModel ia)
+        {
+            return Redirect("pornhub.com");
+        }
         private string[] GetTagsFromServer()
         {
             List<string> result = new List<string>();
@@ -57,18 +84,6 @@ namespace Collectors.Controllers
                 result.Add(t.Name);
             }
             return result.ToArray();
-        }
-
-        [HttpPost]
-        public IActionResult Index(ItemAddModel ia)
-        {
-            CollectionItem item = new CollectionItem
-            { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
-            //SetAdditionalFields(ia, item);
-            UpdateTags(ia.Tags);
-            db.Items.Add(item);
-            db.SaveChanges();
-            return View(GetItemsListModel(ia.CollectionId));
         }
 
         private Collection GetCollectionById(int id)
@@ -87,6 +102,7 @@ namespace Collectors.Controllers
             ItemsListViewModel model = new ItemsListViewModel { Items = items, CollectionId = id };
             model.AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask);
             model.AdditionalFieldsNames = GetFieldsNames(c, model.AdditionalFieldsIndexes);
+            model.Selected = new List<bool>(new bool[items.Count]);
             return model;
         }
         private void UpdateTags(string tags)
