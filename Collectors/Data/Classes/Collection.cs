@@ -15,7 +15,7 @@ namespace Collectors.Data.Classes
 
         public string AdditionalItemsFields { get; set; }
 
-        public int SelectedFields { get; set; }
+        public int SelectedFieldsMask { get; set; }
 
     }
 }

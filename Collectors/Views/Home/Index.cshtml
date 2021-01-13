@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
+<div>
+    @await Html.PartialAsync("_SelectLanguagePartial")
+</div>
 <div class="text-center">
     <h1 class="display-4">@Localizer["Message"]</h1>
     @{

@@ -38,6 +38,18 @@ namespace Collectors
             AddLocalization(services);
             ConfigureCulture(services);
 
+        }     
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            SetExceptionHandling(app, env);
+            SetLocalization(app);
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            AddEndpoints(app);
         }
 
         private void AddDb(IServiceCollection services)
@@ -54,6 +66,20 @@ namespace Collectors
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+        }
+        private void AddAuthentification(IServiceCollection services)
+        {
+            services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.AppId = Configuration["Authentication:Facebook:AppId"];
+                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                })
+                .AddTwitter(options =>
+                {
+                    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                });
         }
 
         private void ConfigureCulture(IServiceCollection services)
@@ -78,24 +104,8 @@ namespace Collectors
                     });
         }
 
-        private void AddAuthentification(IServiceCollection services)
+        private static void SetExceptionHandling(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            services.AddAuthentication()
-                .AddFacebook(options =>
-                {
-                    options.AppId = Configuration["Authentication:Facebook:AppId"];
-                    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                })
-                .AddTwitter(options =>
-                {
-                    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-                    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-                });
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -104,26 +114,21 @@ namespace Collectors
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-
                 app.UseHsts();
             }
-            SetLocalization(app);
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
+        }
+
+        private static void AddEndpoints(IApplicationBuilder app)
+        {
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}/{value?}");
                 endpoints.MapRazorPages();
             });
-
-
-
         }
+
 
         private void SetLocalization(IApplicationBuilder app)
         {

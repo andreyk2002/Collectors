@@ -1,6 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
+<div>
+    @await Html.PartialAsync("_SelectLanguagePartial")
+</div>
+
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>

@@ -111,6 +111,11 @@
     {
       "library": "Darkmode.js@1.5.7",
       "destination": "wwwroot/Darkmode.js/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "tagify@0.1.1",
+      "destination": "wwwroot/lib/tagify/"
     }
   ]
 }

@@ -20,11 +20,9 @@ namespace Collectors.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IStringLocalizer<HomeController> _localizer;
-        public HomeController(ILogger<HomeController> logger, 
-            UserManager<IdentityUser> roleManager, IStringLocalizer<HomeController> localizer)
+
+        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> roleManager)
         {
-            _localizer = localizer;
             _logger = logger;
             _userManager = roleManager;
         }
@@ -41,17 +39,10 @@ namespace Collectors.Controllers
             return View(currentUser);
         }
 
-        private bool HasRole(IdentityUser currentUser)
-        {
-            return _userManager.GetRolesAsync(currentUser).Result.Count != 0;
-        }
-
         public IActionResult Privacy()
         {
             return View();
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -68,6 +59,11 @@ namespace Collectors.Controllers
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
             return LocalRedirect(returnUrl);
+        }
+
+        private bool HasRole(IdentityUser currentUser)
+        {
+            return _userManager.GetRolesAsync(currentUser).Result.Count != 0;
         }
     }
 }

@@ -9,7 +9,9 @@ namespace Collectors.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<Collection> Collections { get; set; }
+        public DbSet<CollectionItem> Items { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

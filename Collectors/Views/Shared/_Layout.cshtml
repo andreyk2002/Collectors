@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/profile.css" />
+    <link rel="stylesheet" href="~/css/tagify.css" />
 </head>
 <body>
     <header class="darkmode-ignore w-100" style="background-color:cadetblue">
@@ -29,14 +30,11 @@
                         </li>
                     </ul>
                 </div>
-               
+
             </div>
         </nav>
     </header>
     <div class="container">
-        <div>
-            @await Html.PartialAsync("_SelectLanguagePartial")
-        </div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -52,7 +50,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Darkmode.js/darkmode-js.min.js"></script>
     <script src="~/js/enableDarkMode.js"></script>
+    <script src="~/js/tagify/tagify.min.js"></script>
     @RenderSection("Scripts", required: false)
-
 </body>
 </html>

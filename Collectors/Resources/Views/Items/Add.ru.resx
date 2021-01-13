@@ -117,70 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add external login" xml:space="preserve">
-    <value>Подключить сторонний аккаунт</value>
+  <data name="Add some tags for your item" xml:space="preserve">
+    <value>Добавить тэги для элемента</value>
   </data>
-  <data name="Change" xml:space="preserve">
-    <value>Применить изменения</value>
+  <data name="Finish" xml:space="preserve">
+    <value>Готово</value>
   </data>
-  <data name="Confirm new password" xml:space="preserve">
-    <value>Повторите новый пароль</value>
+  <data name="Item name" xml:space="preserve">
+    <value>Название элемента</value>
   </data>
-  <data name="Confirm password" xml:space="preserve">
-    <value>Повторите пароль</value>
-  </data>
-  <data name="Current password" xml:space="preserve">
-    <value>Текущий пароль</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Удалить</value>
-  </data>
-  <data name="Download" xml:space="preserve">
-    <value>Скачать</value>
-  </data>
-  <data name="Email" xml:space="preserve">
-    <value>Эл. почта</value>
-  </data>
-  <data name="External logins" xml:space="preserve">
-    <value>Подключенные аккаунты</value>
-  </data>
-  <data name="Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="ManageAccount" xml:space="preserve">
-    <value>Управление аккаунтом</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Имя</value>
-  </data>
-  <data name="New password" xml:space="preserve">
-    <value>Новый пароль</value>
-  </data>
-  <data name="Password" xml:space="preserve">
-    <value>Пароль</value>
-  </data>
-  <data name="Personal data" xml:space="preserve">
-    <value>Персональные данные</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Профиль</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Регистрация</value>
-  </data>
-  <data name="Remember me?" xml:space="preserve">
-    <value>Запомнить меня</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Сохранить</value>
-  </data>
-  <data name="Tags" xml:space="preserve">
-    <value>Тэги</value>
-  </data>
-  <data name="Two-factor authentication" xml:space="preserve">
-    <value>Двухфакторная аунтефикация</value>
-  </data>
-  <data name="User name" xml:space="preserve">
-    <value>Имя пользователя</value>
+  <data name="write tags here" xml:space="preserve">
+    <value>вводите тэги здесь</value>
   </data>
 </root>

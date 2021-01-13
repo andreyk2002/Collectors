@@ -31,17 +31,6 @@ namespace Collectors.Controllers
             return View(model);
         }
 
-        private async Task AddUsersAsync(IQueryable<IdentityUser> users, List<UserModel> usersList)
-        {
-            foreach (var u in users)
-            {
-                string s = "";
-                foreach (var role in await UserManager.GetRolesAsync(u))
-                    s = (s == "") ? role.ToString() : s + " - " + role.ToString();
-                usersList.Add(new UserModel { User = u, IsBlocked = await UserManager.IsLockedOutAsync(u), Role = s });
-            }
-        }
-
         [HttpPost]
         public async Task<ActionResult> Delete(CheckboxListModel model)
         {
@@ -78,6 +67,17 @@ namespace Collectors.Controllers
                 await UserManager.AddToRoleAsync(user, UserRoles.admin.ToString());
             }
             return RedirectToAction("Index");
+        }
+
+        private async Task AddUsersAsync(IQueryable<IdentityUser> users, List<UserModel> usersList)
+        {
+            foreach (var u in users)
+            {
+                string s = "";
+                foreach (var role in await UserManager.GetRolesAsync(u))
+                    s = (s == "") ? role.ToString() : s + " - " + role.ToString();
+                usersList.Add(new UserModel { User = u, IsBlocked = await UserManager.IsLockedOutAsync(u), Role = s });
+            }
         }
 
         public async Task DeleteAllRolesAsync(IdentityUser user)

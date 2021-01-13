@@ -6,7 +6,9 @@
 @using Markdig;
 @inject IViewLocalizer Localizer;
 @model Collection
-
+<div>
+    @await Html.PartialAsync("_SelectLanguagePartial")
+</div>
 <h2>@Localizer["Manage collections"]</h2>
 <div class="toolbar mb-5 p-2 darkmode-ignore w-100" style="background-color:cornflowerblue">
     <a asp-action="Create">
@@ -20,27 +22,29 @@
         {
 
             <div class="card m-3 d-inline-block p-1 w-50 darkmode-ignore" style="background-color:cornflowerblue;">
-                <form>
-                    <input asp-for="Id" value="@element.Id" type="hidden" />
-                    <button type="submit" asp-action="Edit">
-                        <img src="~/bootstrap-icons/icons/pencil.svg" />
-                    </button>
+                    <form>
+                        <input asp-for="Id" value="@element.Id" type="hidden" />
+                        <button type="submit" asp-action="Edit">
+                            <img src="~/bootstrap-icons/icons/pencil.svg" />
+                        </button>
 
-                    <button type="submit" asp-action="Delete">
-                        <img src="~/bootstrap-icons/icons/trash.svg" />
-                    </button>
-                </form>
-                <a asp-action="View">
-                    @if (element.Image != null)
-                    {
-                        <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(element.Image))" alt="@Localizer["View items"]" />
-                    }
-                    else
-                    {
-                        <img class="card-img-top" src="~/img/ImageNotSet.png" alt="@Localizer["View items"]" />
-                    }
-                </a>
-                
+                        <button type="submit" asp-action="Delete">
+                            <img src="~/bootstrap-icons/icons/trash.svg" />
+                        </button>
+                        <button type="submit" asp-action="Index" asp-controller="Items">
+                            <img src="~/bootstrap-icons/icons/eye.svg" />
+                        </button>
+                      
+                            @if (element.Image != null)
+                            {
+                                <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(element.Image))" alt="@Localizer["View items"]" />
+                            }
+                            else
+                            {
+                                <img class="card-img-top" src="~/img/ImageNotSet.png" alt="@Localizer["View items"]" />
+                            }
+
+                    </form>
                 <div class="card-body">
                     <h5 class="card-title">Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(element.ThemeId);</h5>
                     @Html.Raw(Markdown.ToHtml(element.ShortDescription))
