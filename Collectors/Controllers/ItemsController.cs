@@ -1,4 +1,5 @@
-﻿using Collectors.Data;
+﻿using Collectors.Classes;
+using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +34,7 @@ namespace Collectors.Controllers
         {
             CollectionItem item = new CollectionItem
             { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
-            //SetAdditionalFields(ia, item);
+            SetAdditionalFields(ia, item);
             UpdateTags(ia.Tags);
             db.Items.Add(item);
             db.SaveChanges();
@@ -69,9 +70,8 @@ namespace Collectors.Controllers
                     db.Items.Remove(items[i]);
             db.SaveChanges();
             return Redirect("Index?id=" + ia.CollectionId);
-         
-        }
 
+        }
         public IActionResult Edit(ItemsListViewModel ia)
         {
             return Redirect("pornhub.com");
@@ -116,10 +116,25 @@ namespace Collectors.Controllers
             db.SaveChanges();
         }
 
-        private void SetAdditionalFields(ItemAddModel ia, CollectionItem collectionItem)
+        private void SetAdditionalFields(ItemAddModel ia, CollectionItem c)
         {
-            throw new NotImplementedException();
+            FieldManager m = new FieldManager(c);
+            if (ia.AdditionalFieldsIndexes != null)
+            {
+                SetFieledsByIndexes(ia, m);
+            }
         }
+
+        private static void SetFieledsByIndexes(ItemAddModel ia, FieldManager m)
+        {
+            for (int i = 0; i < ia.AdditionalFieldsIndexes.Count; i++)
+            {
+                if (ia.AdditionalFieldsValues[i] != null)
+                    m.SetFieldByIndex
+                        (ia.AdditionalFieldsIndexes[i], ia.AdditionalFieldsValues[i]);
+            }
+        }
+
         private List<int> IndexesFromMask(int mask)
         {
             List<int> indexes = new List<int>();

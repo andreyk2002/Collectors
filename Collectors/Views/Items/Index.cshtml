@@ -1,8 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
 @using Collectors.Models;
+@using Collectors.Classes;
 @inject IViewLocalizer Localizer;
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 @model ItemsListViewModel
+@{
+    IFieldManager manager;
+}
+
 <form method="post">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">@Localizer["Manage items"]</a>
@@ -84,6 +89,13 @@
                     <td>@Model.Items[i].Id</td>
                     <td>@Model.Items[i].Name</td>
                     <td>@Model.Items[i].Tags</td>
+                    @{
+                        manager = new FieldManager(Model.Items[i]);
+                    };
+                    @foreach (var j in Model.AdditionalFieldsIndexes)
+                    {
+                        <td>@manager.GetFieldByIndex(j)</td>
+                    }
                 </tr>
             }
         </tbody>
