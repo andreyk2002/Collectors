@@ -1,41 +1,78 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
 @using Collectors.Data.Classes;
+@using Collectors.Classes;
 @model ItemAddModel;
 @inject IViewLocalizer Localizer;
 
-<h2 class="text-center m-4">@Localizer["Add items to your collection"]</h2>
-<form method="post">
+<h2 class="text-center m-4">@Localizer["Add item to your collection"]</h2>
+<form method="post" class="needs-validation" novalidate>
     <input asp-for="@Model.Tags" id="tags" value="@string.Join(',',ViewBag.Tags)" type="hidden" />
-    <div class="mb-5">
-        <label asp-for="@Model.Name" class="text-center">@Localizer["Item name"]:</label><br />
-        <input asp-for="@Model.Name" type="text" />
+    <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
+
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom01" asp-for="@Model.Name">
+                @Localizer["Item name"]:
+            </label>
+            <input asp-for="@Model.Name" type="text" class="form-control" id="validationCustom01"
+                   placeholder="@Localizer["Item name"]" value="Name" required />
+            <div class="valid-feedback">
+                @Localizer["Looks good!"]
+            </div>
+        </div>
+        <div class="col-md-8 mb-3">
+            <label for="validationCustomTags">@Localizer["Add some tags for your item"]</label>
+            <input type="text" class="form-control mb-4 text-left w-100" name="input-custom-dropdown"
+                   placeholder="@Localizer["write tags here"]" value=""
+                   id="validationCustomTags" aria-describedby="inputGroupPrepend" required />
+            <div class="valid-feedback">
+                @Localizer["Looks good!"]
+            </div>
+            <div class="invalid-feedback">
+                @Localizer["choose a tags for your item"]
+            </div>
+        </div>
     </div>
-    <h3>@Localizer["Add some tags for your item"]</h3>
-    <input type="text" class="form-control mb-4 text-left" name="input-custom-dropdown"
-           placeholder="@Localizer["write tags here"]" value="" />
-    <div class="m-3">
-        <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
-        @{
-            if (Model.AdditionalFieldsIndexes != null)
+    @{
+        if (Model.AdditionalFieldsIndexes != null)
+        {
+            for (int i = 0; i < Model.AdditionalFieldsNames.Count; i += 3)
             {
-                for (int i = 0; i < Model.AdditionalFieldsNames.Count; i++)
-                {
-                    <input asp-for="@Model.AdditionalFieldsIndexes[i]"
-                           value="@Model.AdditionalFieldsIndexes[i]" type="hidden" />
-                    <label asp-for="@Model.AdditionalFieldsValues[i]">
-                        @Model.AdditionalFieldsNames[i]
-                    </label>
-                    <input asp-for="@Model.AdditionalFieldsValues[i]" type="text" class="m-2" />
-                    <br />
-                 }
+                <div class="form-row">
+                    @for (int j = i; j < i + 3 && j < Model.AdditionalFieldsNames.Count; j++)
+                    {
+                        int index = Model.AdditionalFieldsIndexes[j];
+                        string name = FieldManager.GetTypeByIndex(index);
+                        <div class="col-md-4 mb-3">
+                            <input asp-for="@Model.AdditionalFieldsIndexes[j]"
+                                   value="@Model.AdditionalFieldsIndexes[j]" type="hidden" />
+                            <label asp-for="@Model.AdditionalFieldsValues[j]">
+                                @Model.AdditionalFieldsNames[j]
+                            </label>
+                            @if (name != "textarea")
+                            {
+                                <input class="form-control m-2" asp-for="@Model.AdditionalFieldsValues[j]"
+                                       type="@name" />
+                            }
+                            else
+                            {
+                                <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
+                                          class="form-control m-2">
+
+                                </textarea>
+                            }
+
+                        </div>
+                    }
+                </div>
             }
         }
-    </div>
-    <button asp-action="Index" id="createButton" class="btn btn-primary" type="submit">
-        @Localizer["Create"]
+    }
+    <button asp-action="Index" class="btn btn-primary btn-sm" type="submit">
+        @Localizer["Finish"]
     </button>
 </form>
-
 @section scripts{
     <script src="~/js/tags.js"></script>
+    <script src="~/js/validate.js"></script>
 }

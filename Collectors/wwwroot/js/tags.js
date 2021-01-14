@@ -4,7 +4,7 @@ let tags = tagsArea.value.split(',');
 let tagify = new Tagify(input, {
     whitelist: tags,
     blacklist: ["Something"],
-    maxTags: 7,
+    maxTags: 6,
     dropdown: {
         maxItems: 20,
         classname: "tags-look",

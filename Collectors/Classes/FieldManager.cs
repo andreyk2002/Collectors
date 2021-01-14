@@ -58,6 +58,18 @@ namespace Collectors.Classes
             return dt.ToString("yyyy-MM-dd");
         }
 
+        public static string GetTypeByIndex(int index)
+        {
+            if (3 > index)
+                return "number";
+            if (6 > index)
+                return "text";
+            if (9 > index)
+                return "textarea";
+            if (12 > index)
+                return "checkbox";
+            return "datetime-local";
+        }
         private void SetInt( int index,string value)
         {
             int i = Int32.Parse(value);

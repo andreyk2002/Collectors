@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Add item to your collection" xml:space="preserve">
+    <value>Добавить элемент в коллекцию</value>
+  </data>
   <data name="Add some tags for your item" xml:space="preserve">
     <value>Добавить тэги для элемента</value>
+  </data>
+  <data name="choose a tags for your item" xml:space="preserve">
+    <value>Выберите теги для элемента</value>
   </data>
   <data name="Finish" xml:space="preserve">
     <value>Готово</value>
   </data>
   <data name="Item name" xml:space="preserve">
     <value>Название элемента</value>
+  </data>
+  <data name="Looks good!" xml:space="preserve">
+    <value>Тут всё верно!</value>
   </data>
   <data name="write tags here" xml:space="preserve">
     <value>вводите тэги здесь</value>

@@ -74,7 +74,7 @@ namespace Collectors.Controllers
         }
         public IActionResult Edit(ItemsListViewModel ia)
         {
-            return Redirect("pornhub.com");
+            return Redirect("/pornhub.com");
         }
         private string[] GetTagsFromServer()
         {

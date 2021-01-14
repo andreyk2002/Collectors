@@ -46,7 +46,8 @@
                     </button>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @Localizer["Order by"]
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -59,8 +60,11 @@
                 </li>
             </ul>
 
-            <input class="form-control mr-sm-2" type="search" placeholder="@Localizer["Search by name"]" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input class="form-control mr-sm-2" type="search"
+                   placeholder="@Localizer["Search by name"]" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                <img src="~/bootstrap-icons/icons/search.svg" />
+            </button>
         </div>
     </nav>
 
@@ -91,7 +95,7 @@
                     <td>@Model.Items[i].Tags</td>
                     @{
                         manager = new FieldManager(Model.Items[i]);
-                    };
+                    }
                     @foreach (var j in Model.AdditionalFieldsIndexes)
                     {
                         <td>@manager.GetFieldByIndex(j)</td>
