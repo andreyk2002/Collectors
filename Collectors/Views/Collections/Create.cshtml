@@ -4,14 +4,16 @@
 @inject IViewLocalizer Localizer;
 @{
     var themes = Enum.GetValues(typeof(CollectionTheme));
-    string[] fieldsTypes = { "Integer fields", "Oneline string fields", "Text fields", "Boolean fields", "Date fields" };
+    string[] fieldsTypes = { "Integer fields", "Oneline string fields", "Text fields", 
+        "Boolean fields", "Date fields" };
 }
 <div>
     @await Html.PartialAsync("_SelectLanguagePartial")
 </div>
 <h2 class="text-center m-4">@Localizer["Create new collection"]</h2>
 <form method="post" enctype="multipart/form-data">
-    <textarea rows="5" cols="60" asp-for="@Model.ShortDescription" placeholder="@Localizer["Short description"]"></textarea>
+    <textarea rows="5" cols="60" asp-for="@Model.ShortDescription" 
+              placeholder="@Localizer["Short description"]"></textarea>
     <br />
     <div id="collection theme" class="mb-5">
         <label class="text-center">@Localizer["Collection Theme"]:</label><br />

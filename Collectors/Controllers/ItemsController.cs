@@ -30,7 +30,7 @@ namespace Collectors.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(ItemAddModel ia)
+        public IActionResult Index(ItemModel ia)
         {
             CollectionItem item = new CollectionItem
             { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
@@ -52,12 +52,7 @@ namespace Collectors.Controllers
 
         public IActionResult Add(ItemsListViewModel il)
         {
-            ItemAddModel model = new ItemAddModel
-            {
-                AdditionalFieldsNames = il.AdditionalFieldsNames,
-                AdditionalFieldsIndexes = il.AdditionalFieldsIndexes,
-                CollectionId = il.CollectionId
-            };
+            ItemModel model = GetItemModel(il);
             ViewBag.Tags = GetTagsFromServer();
             return View(model);
         }
@@ -74,7 +69,42 @@ namespace Collectors.Controllers
         }
         public IActionResult Edit(ItemsListViewModel ia)
         {
-            return Redirect("/pornhub.com");
+            ViewBag.Tags = GetTagsFromServer();
+            var items = GetItemsInCollection(ia.CollectionId);
+            for (int i = 0; i < items.Count; i++)
+                if (ia.Selected[i])
+                {
+                    ViewBag.Item = items[i];
+                    return View(GetItemModel(ia));
+                }
+            return Redirect("Index?id=" + ia.CollectionId);
+        }
+
+        [HttpPost]
+        public IActionResult Save(ItemModel ia, int itemId)
+        {
+            CollectionItem item = GetItem(itemId);
+            SetAdditionalFields(ia, item);
+            UpdateTags(ia.Tags);
+            item.Name = ia.Name;
+            item.Tags = ia.Tags;
+            db.SaveChanges();
+            return Redirect("Index?id=" + ia.CollectionId);
+        }
+
+        private CollectionItem GetItem(int itemId)
+        {
+            return db.Items.FirstOrDefault(i => i.Id == itemId);
+        }
+
+        private static ItemModel GetItemModel(ItemsListViewModel il)
+        {
+            return new ItemModel
+            {
+                AdditionalFieldsNames = il.AdditionalFieldsNames ?? new List<string>(),
+                AdditionalFieldsIndexes = il.AdditionalFieldsIndexes ?? new List<int>(),
+                CollectionId = il.CollectionId
+            };
         }
         private string[] GetTagsFromServer()
         {
@@ -116,7 +146,7 @@ namespace Collectors.Controllers
             db.SaveChanges();
         }
 
-        private void SetAdditionalFields(ItemAddModel ia, CollectionItem c)
+        private void SetAdditionalFields(ItemModel ia, CollectionItem c)
         {
             FieldManager m = new FieldManager(c);
             if (ia.AdditionalFieldsIndexes != null)
@@ -125,7 +155,7 @@ namespace Collectors.Controllers
             }
         }
 
-        private static void SetFieledsByIndexes(ItemAddModel ia, FieldManager m)
+        private static void SetFieledsByIndexes(ItemModel ia, FieldManager m)
         {
             for (int i = 0; i < ia.AdditionalFieldsIndexes.Count; i++)
             {

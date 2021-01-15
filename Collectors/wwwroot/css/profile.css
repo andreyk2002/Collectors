@@ -2,10 +2,9 @@
     color: white;
 }
 
-.darkmode--activated p {
-    color: aqua;
+.darkmode--activated label {
+    color: white;
 }
-
 .darkmode--activated a :hover {
     color: aqua;
 }

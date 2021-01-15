@@ -120,8 +120,17 @@
   <data name="Add external login" xml:space="preserve">
     <value>Подключить сторонний аккаунт</value>
   </data>
+  <data name="Add item to your collection" xml:space="preserve">
+    <value>Добавить элемент в коллекцию</value>
+  </data>
+  <data name="Add some tags for your item" xml:space="preserve">
+    <value>Добавить тэги для элемента</value>
+  </data>
   <data name="Change" xml:space="preserve">
     <value>Применить изменения</value>
+  </data>
+  <data name="choose a tags for your item" xml:space="preserve">
+    <value>Выберите теги для элемента</value>
   </data>
   <data name="Confirm new password" xml:space="preserve">
     <value>Повторите новый пароль</value>
@@ -144,8 +153,17 @@
   <data name="External logins" xml:space="preserve">
     <value>Подключенные аккаунты</value>
   </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Готово</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>ID</value>
+  </data>
+  <data name="Item name" xml:space="preserve">
+    <value>Название элемента</value>
+  </data>
+  <data name="Looks good!" xml:space="preserve">
+    <value>Тут всё верно!</value>
   </data>
   <data name="ManageAccount" xml:space="preserve">
     <value>Управление аккаунтом</value>
@@ -182,5 +200,8 @@
   </data>
   <data name="User name" xml:space="preserve">
     <value>Имя пользователя</value>
+  </data>
+  <data name="write tags here" xml:space="preserve">
+    <value>вводите тэги здесь</value>
   </data>
 </root>

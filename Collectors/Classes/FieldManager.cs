@@ -1,5 +1,6 @@
 ﻿using Collectors.Data.Classes;
 using System;
+using Markdig;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,9 +27,9 @@ namespace Collectors.Classes
                 3 => Item.StringField1,
                 4 => Item.StringField2,
                 5 => Item.StringField3,
-                6 => Item.TextField1,
-                7 => Item.TextField2,
-                8 => Item.TextField3,
+                6 => FormatText(Item.TextField1),
+                7 => FormatText(Item.TextField2),
+                8 => FormatText(Item.TextField3),
                 9 => Item.BoolField1.ToString(),
                 10 => Item.BoolField2.ToString(),
                 11 => Item.BoolField3.ToString(),
@@ -39,18 +40,28 @@ namespace Collectors.Classes
             };
         }
 
+        private string FormatText(string tf)
+        {
+            return (tf != null) ? Markdown.ToHtml(tf) : "";
+        }
+
         public void SetFieldByIndex(int index, string s)
         {
             if (index < 3)
                 SetInt(index, s);
             else if (index < 6)
                 SetString(index % FieldsForType, s);
-            else if (index < 9)
+            else if (IsTextField(index))
                 SetText(index % FieldsForType, s);
             else if (index < 12)
                 SetBool(index % FieldsForType, s);
             else
                 SetDate(index % FieldsForType, s);
+        }
+
+        public static bool IsTextField(int index)
+        {
+            return index >= 6 && index < 9;
         }
 
         private string DateToString(DateTime dt)
@@ -70,7 +81,7 @@ namespace Collectors.Classes
                 return "checkbox";
             return "datetime-local";
         }
-        private void SetInt( int index,string value)
+        private void SetInt(int index, string value)
         {
             int i = Int32.Parse(value);
             if (index == 0)

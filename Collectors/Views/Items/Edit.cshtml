@@ -3,17 +3,21 @@
 @using Collectors.Classes;
 @model ItemModel;
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
-<h2 class="text-center m-4">@SharedLocalizer["Add item to your collection"]</h2>
+@{
+    IFieldManager fieldManager = new FieldManager(ViewBag.Item);
+}
+<h2 class="text-center m-4">@SharedLocalizer["Edit your item"]</h2>
 <form method="post" class="needs-validation" novalidate>
     <input asp-for="@Model.Tags" id="tags" value="@string.Join(',',ViewBag.Tags)" type="hidden" />
     <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
+    <input name="itemId" value="@ViewBag.Item.Id" type="hidden" />
     <div class="form-row white">
         <div class="col-md-4 mb-3">
             <label>
                 @SharedLocalizer["Item name"]:
             </label>
             <input asp-for="@Model.Name" type="text" class="form-control" id="validationCustom01"
-                   placeholder="@SharedLocalizer["Item name"]" value="Name" required />
+                   placeholder="@SharedLocalizer["Item name"]" value="@ViewBag.Item.Name" required />
             <div class="valid-feedback">
                 @SharedLocalizer["Looks good!"]
             </div>
@@ -21,7 +25,7 @@
         <div class="col-md-8 mb-3">
             <label for="validationCustomTags">@SharedLocalizer["Add some tags for your item"]</label>
             <input type="text" class="form-control mb-4 text-left w-100" name="input-custom-dropdown"
-                   placeholder="@SharedLocalizer["write tags here"]" value=""
+                   placeholder="@SharedLocalizer["write tags here"]" value="@ViewBag.Item.Tags"
                    id="validationCustomTags" aria-describedby="inputGroupPrepend" required />
             <div class="valid-feedback">
                 @SharedLocalizer["Looks good!"]
@@ -40,27 +44,27 @@
                     int index = Model.AdditionalFieldsIndexes[j];
                     string name = FieldManager.GetTypeByIndex(index);
                     <div class="col-md-4 mb-3">
-                        <input asp-for="@Model.AdditionalFieldsIndexes[j]"
-                               value="@Model.AdditionalFieldsIndexes[j]" type="hidden" />
                         <label asp-for="@Model.AdditionalFieldsValues[j]">
                             @Model.AdditionalFieldsNames[j]
                         </label>
                         @if (name != "textarea")
                         {
                             <input class="form-control m-2"
-                                   asp-for="@Model.AdditionalFieldsValues[j]" type="@name" />
+                                   asp-for="@Model.AdditionalFieldsValues[j]" type="@name"
+                                   value="@fieldManager.GetFieldByIndex(index)" />
                         }
                         else
                         {
                             <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
-                                      class="form-control m-2"></textarea>
+                                      value="@fieldManager.GetFieldByIndex(index)" class="form-control m-2">
+                                </textarea>
                         }
                     </div>
                 }
             </div>
         }
     }
-    <button asp-action="Index" class="btn btn-primary btn-sm" type="submit">
+    <button asp-action="Save" class="btn btn-primary btn-sm" type="submit">
         @SharedLocalizer["Finish"]
     </button>
 </form>

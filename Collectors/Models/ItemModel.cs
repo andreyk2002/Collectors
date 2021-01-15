@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Collectors.Models
 {
-    public class ItemAddModel
+    public class ItemModel
     {
+       
         [Required]
         [Display(Name = "Name")]
         [StringLength(255)]
