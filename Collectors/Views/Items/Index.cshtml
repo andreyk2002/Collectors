@@ -7,6 +7,8 @@
 @model ItemsListViewModel
 @{
     IFieldManager manager;
+    string name = SharedLocalizer["Name"].Value;
+    string tags = SharedLocalizer["Tags"].Value;
 }
 <form method="post">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,13 +30,13 @@
             }
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <button id="editButton" asp-action="Edit" type="submit">
+                    <button class="nav-item" id="editButton" asp-action="Edit" type="submit">
                         <img src="~/bootstrap-icons/icons/pencil-fill.svg" />
                         <span class="sr-only">(current)</span>
                     </button>
                 </li>
                 <li class="nav-item active">
-                    <button asp-action="Delete" type="submit">
+                    <button class="nav-item" asp-action="Delete" type="submit">
                         <img src="~/bootstrap-icons/icons/trash-fill.svg" />
                         <span class="sr-only">(current)</span>
                     </button>
@@ -51,17 +53,23 @@
                         @Localizer["Order by"]
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">@SharedLocalizer["Id"]</a>
-                        <a class="dropdown-item" href="#">@SharedLocalizer["Name"]</a>
-                        <a class="dropdown-item" href="#">@SharedLocalizer["Tags"]</a>
+                        <button class="dropdown-item" asp-action="OrderById" type="submit">@SharedLocalizer["Id"]</button>
+                        <button class="dropdown-item" asp-action="OrderByName" type="submit">@SharedLocalizer["Name"]</button>
+                        <button class="dropdown-item" asp-action="OrderByTags" type="submit">@SharedLocalizer["Tags"]</button>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">@Localizer["Additional fields"]</a>
+                        @{
+                            foreach (var i in Model.AdditionalFieldsNames)
+                            {
+                                <a class="dropdown-item" href="https:\\legalporno.com">@i</a>
+                            }
+                        }
+
                     </div>
                 </li>
             </ul>
-            <input class="form-control mr-sm-2" type="search"
+            <input class="form-control mr-sm-2" type="search" value="" name="searchString"
                    placeholder="@Localizer["Search by name"]" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+            <button asp-action="SearchByName" class="btn btn-outline-success my-2 my-sm-0" type="submit">
                 <img src="~/bootstrap-icons/icons/search.svg" />
             </button>
         </div>

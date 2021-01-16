@@ -18,7 +18,6 @@ namespace Collectors.Models
         public List<string> AdditionalFieldsNames { get; set; }
         public List<string> AdditionalFieldsValues { get; set; }
         public List<int> AdditionalFieldsIndexes { get; set; }
-
     
     }
 }
