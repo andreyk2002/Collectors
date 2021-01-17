@@ -14,7 +14,7 @@ namespace Collectors.Controllers
 {
     public partial class ItemsController :  Controller
     {
-        private AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();
+        private readonly AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();
         private readonly UserManager<IdentityUser> userManager;
         private readonly DbManager dbManager;
 
@@ -46,7 +46,8 @@ namespace Collectors.Controllers
 
         public ItemsListViewModel GetSortedItems()
         {
-            return TempDataExtensions.Get<ItemsListViewModel>(TempData, "Items");
+            var items =  TempDataExtensions.Get<ItemsListViewModel>(TempData, "Items");
+            return items ?? new ItemsListViewModel();
         }
 
         private List<string> GetFieldsNames(Collection c, List<int> indexes)
@@ -112,6 +113,13 @@ namespace Collectors.Controllers
         public IActionResult OrderByTags(ItemsListViewModel model)
         {
             model.Items = dbManager.GetSortedByTags(model.CollectionId);
+            PutItemsListModel(model);
+            return Redirect("Index");
+        }
+
+        public IActionResult OrderByFieldIndex(ItemsListViewModel model, int fieldIndex)
+        {
+            model.Items = dbManager.GetSortBy(model.CollectionId, fieldIndex);
             PutItemsListModel(model);
             return Redirect("Index");
         }

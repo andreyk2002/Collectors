@@ -60,7 +60,9 @@
                         @{
                             foreach (var i in Model.AdditionalFieldsNames)
                             {
-                                <a class="dropdown-item" href="https:\\legalporno.com">@i</a>
+                                
+                                <input type="hidden" name="fieldIndex" value="@Model.AdditionalFieldsIndexes[0]" />
+                                <button class="dropdown-item" asp-action="OrderByFieldIndex" type="submit">@SharedLocalizer["Tags"]</button>
                             }
                         }
 

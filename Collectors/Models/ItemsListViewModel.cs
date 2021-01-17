@@ -9,6 +9,14 @@ namespace Collectors.Models
 {
     public class ItemsListViewModel
     {
+        public ItemsListViewModel()
+        {
+            Selected = new List<bool>();
+            Items = new List<CollectionItem>();
+            AdditionalFieldsIndexes = new List<int>();
+            AdditionalFieldsNames = new List<string>();
+        }
+
         [Required]
         public int CollectionId { get; set; }
         [Required]
