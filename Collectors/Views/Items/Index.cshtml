@@ -58,12 +58,15 @@
                         <button class="dropdown-item" asp-action="OrderByTags" type="submit">@SharedLocalizer["Tags"]</button>
                         <div class="dropdown-divider"></div>
                         @{
-                            foreach (var i in Model.AdditionalFieldsNames)
+
+                            for (int i = 0; i < Model.AdditionalFieldsNames.Count; i++)
                             {
-                                
-                                <input type="hidden" name="fieldIndex" value="@Model.AdditionalFieldsIndexes[0]" />
-                                <button class="dropdown-item" asp-action="OrderByFieldIndex" type="submit">@SharedLocalizer["Tags"]</button>
+
+                                <button class="dropdown-item additional-field" asp-action="OrderByFieldIndex" type="submit">
+                                    @Model.AdditionalFieldsNames[i]
+                                </button>
                             }
+                            <input type="hidden" id="fieldIndex" name="index" value="" />
                         }
 
                     </div>

@@ -25,3 +25,15 @@ editButton.addEventListener('click', function (event) {
         alert("Can't edit multiple items at once");
     }
 });
+
+let buttons = document.getElementsByClassName('additional-field');
+let inputForIndex = document.getElementById('fieldIndex');
+for (let i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function () {
+        inputForIndex.value = i;
+    });  
+}
+//    e.addEventListener('click', function () {
+//        inputForIndex.value = i;
+//    })
+//});

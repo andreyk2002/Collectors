@@ -116,6 +116,14 @@
       "provider": "unpkg",
       "library": "tagify@0.1.1",
       "destination": "wwwroot/lib/tagify/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@5.0.2",
+      "destination": "wwwroot/microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.min.js"
+      ]
     }
   ]
 }

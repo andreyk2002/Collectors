@@ -117,9 +117,10 @@ namespace Collectors.Controllers
             return Redirect("Index");
         }
 
-        public IActionResult OrderByFieldIndex(ItemsListViewModel model, int fieldIndex)
+        public IActionResult OrderByFieldIndex(ItemsListViewModel model, int index)
         {
-            model.Items = dbManager.GetSortBy(model.CollectionId, fieldIndex);
+            model.Items = dbManager.
+                GetSortBy(model.CollectionId, model.AdditionalFieldsIndexes[index]);
             PutItemsListModel(model);
             return Redirect("Index");
         }

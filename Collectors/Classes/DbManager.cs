@@ -57,9 +57,9 @@ namespace Collectors.Classes
 
         public List<CollectionItem> GetSortBy(int id, int fieldIndex)
         {
-            var items = GetItemsByCollectionId(id);
-            items.OrderBy(i => new FieldManager(i).GetFieldByIndex(fieldIndex));
-            return items.ToList();
+            var items = GetItemsByCollectionId(id).ToList();
+            items.Sort((e1, e2) => CompareBySelectedField(fieldIndex, e1, e2));
+            return items;
         }
 
         public List<CollectionItem> SearchByName(int id, string name)
@@ -80,7 +80,11 @@ namespace Collectors.Classes
         {
             Db.SaveChanges();
         }
-
+        private static int CompareBySelectedField(int fieldIndex, CollectionItem e1, CollectionItem e2)
+        {
+            return new FieldManager(e1).GetFieldByIndex(fieldIndex)
+                .CompareTo(new FieldManager(e2).GetFieldByIndex(fieldIndex));
+        }
         private IQueryable<CollectionItem> GetItemsByCollectionId(int id)
         {
             return Db.Items.Where(i => i.CollectionId == id);
