@@ -39,23 +39,30 @@
                 {
                     int index = Model.AdditionalFieldsIndexes[j];
                     string name = FieldManager.GetTypeByIndex(index);
-                    <div class="col-md-4 mb-3">
-                        <input asp-for="@Model.AdditionalFieldsIndexes[j]"
-                               value="@Model.AdditionalFieldsIndexes[j]" type="hidden" />
-                        <label asp-for="@Model.AdditionalFieldsValues[j]">
-                            @Model.AdditionalFieldsNames[j]
-                        </label>
-                        @if (name != "textarea")
-                        {
-                            <input class="form-control m-2"
-                                   asp-for="@Model.AdditionalFieldsValues[j]" type="@name" />
-                        }
-                        else
-                        {
-                            <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
-                                      class="form-control m-2"></textarea>
-                        }
+                <div class="col-md-4 mb-3">
+                    <input asp-for="@Model.AdditionalFieldsIndexes[j]"
+                           value="@Model.AdditionalFieldsIndexes[j]" type="hidden" />
+                    <label asp-for="@Model.AdditionalFieldsValues[j]">
+                        @Model.AdditionalFieldsNames[j]
+                    </label>
+                    @if (name != "textarea")
+                    {
+                        <input class="form-control m-2"
+                               asp-for="@Model.AdditionalFieldsValues[j]" type="@name" />
+                    }
+                    else
+                    {
+                        <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
+                                  class="form-control m-2"></textarea>
+                    }
+                    <div class="valid-feedback">
+                        @SharedLocalizer["Looks good!"]
                     </div>
+                    <div class="invalid-feedback">
+                        @SharedLocalizer["Field"] @Model.AdditionalFieldsNames 
+                        @SharedLocalizer["can't be empty"]
+                    </div>
+                </div>
                 }
             </div>
         }

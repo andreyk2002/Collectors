@@ -20,7 +20,7 @@ namespace Collectors.Data.Classes
         public int IntField1 { get; set; }
         public int IntField2 { get; set; }
         public int IntField3 { get; set; }
-        public string TextField1 { get; set; }
+        public string TextField1 { get ; set; }
         public string TextField2 { get; set; }
         public string TextField3 { get; set; }
         public string StringField1 { get; set; }

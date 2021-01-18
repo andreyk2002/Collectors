@@ -82,8 +82,13 @@ namespace Collectors.Classes
         }
         private static int CompareBySelectedField(int fieldIndex, CollectionItem e1, CollectionItem e2)
         {
-            return new FieldManager(e1).GetFieldByIndex(fieldIndex)
-                .CompareTo(new FieldManager(e2).GetFieldByIndex(fieldIndex));
+            var f1 = new FieldManager(e1).GetFieldByIndex(fieldIndex);
+            var f2 = new FieldManager(e2).GetFieldByIndex(fieldIndex);
+            if (f1 == null)
+                return -1;
+            if(f2 == null)
+                return 1;
+            return f1.CompareTo(f2);
         }
         private IQueryable<CollectionItem> GetItemsByCollectionId(int id)
         {
