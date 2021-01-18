@@ -1,3 +1,4 @@
+using Collectors.Comments.Hubs;
 using Collectors.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,7 @@ namespace Collectors
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             AddAuthentification(services);
             AddDb(services);
             AddIdentity(services);
@@ -122,6 +124,7 @@ namespace Collectors
         {
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<CommentHub>("/comments");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}/{value?}");
