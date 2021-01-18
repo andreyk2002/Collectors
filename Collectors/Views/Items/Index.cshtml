@@ -100,7 +100,7 @@
                     <td>
                         <input type="checkbox" asp-for="@Model.Selected[i]" />
                     </td>
-                    <td>@Html.ActionLink(@Model.Items[i].Name, "Index", "Item", new { id = Model.Items[i].Id }, null)</td>
+                    <td>@Html.ActionLink(Model.Items[i].Name, "Index", "Item", new { id = Model.Items[i].Id }, null)</td>
                     <td>@Model.Items[i].Tags</td>
                     @{
                         manager = new FieldManager(Model.Items[i]);

@@ -1,7 +1,7 @@
 ﻿const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl("/comments")
     .build();
-
+let itemId = '0';
 let userName = '';
 hubConnection.on("Send", function (message, userName) {
 
@@ -19,7 +19,8 @@ hubConnection.on("Send", function (message, userName) {
 document.getElementById("sendBtn").addEventListener("click", function (e) {
     let message = document.getElementById("message").value;
     userName = document.getElementById("userName").value;
-    hubConnection.invoke("Send", message, userName);
+    itemId = document.getElementById("itemId").value;
+    hubConnection.invoke("Send", message, userName, itemId);
 });
 
 
