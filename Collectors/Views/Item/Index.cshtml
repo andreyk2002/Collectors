@@ -1,12 +1,28 @@
 ﻿@using System.Web;
-<div id="inputForm">
-    <input type="text" id="message" />
-    <input type="button" id="sendBtn" value="Отправить" />
-    <input id="userName" type="hidden" value="@User.Identity.Name" />
-    <input id="itemId" type="hidden" value="@Model" />
-</div>
 <h2>Discussion about item</h2>
-<div id="chatroom"></div>
+<form asp-action="Create"
+      data-ajax-begin="clearInputField"
+      data-ajax-complete="" data-ajax-failure="alert('Error!')"
+      data-ajax-success="sendMessage" data-ajax="true"
+      data-ajax-method="POST">
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Sent" />
+        <input id="userName" type="hidden" 
+               value="@User.Identity.Name" />
+        <input id="itemId" type="hidden" value="@Model.ItemId" />
+    </div>
+</form>
+<div id="chatroom">
+    @{
+        foreach (var c in Model.Comments)
+        {
+            <b>@c.UserName :</b>
+            <p>@c.Content</p>
+        }
+    }
+</div>
+
 @section Scripts{
     <script src="~/js/commentChat.js"></script>
 }

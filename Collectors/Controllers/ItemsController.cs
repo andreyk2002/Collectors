@@ -2,6 +2,7 @@
 using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Collectors.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     public partial class ItemsController :  Controller
     {
         private readonly AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();

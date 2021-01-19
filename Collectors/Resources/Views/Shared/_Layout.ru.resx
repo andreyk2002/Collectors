@@ -123,4 +123,7 @@
   <data name="Privacy" xml:space="preserve">
     <value>Конфиденциальность</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
 </root>
