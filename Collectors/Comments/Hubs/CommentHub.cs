@@ -11,16 +11,15 @@ namespace Collectors.Comments.Hubs
 {
     public class CommentHub : Hub
     {
-        private readonly ApplicationDbContext Db;
+        private readonly DbManager DbManager;
 
         public CommentHub(ApplicationDbContext context)
         {
-            Db = context ;
+            DbManager = new DbManager { Db = context } ;
         }
         public async Task Send(string message, string userName, string groupId)
         {
-            Db.Comments.Add(new Comment { UserName = userName, Content = message, ItemId = Int64.Parse(groupId) });
-            Db.SaveChanges();
+            DbManager.AddComment(message, userName, groupId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
             await Clients.Group(groupId).SendAsync("Send", message, userName);
         }

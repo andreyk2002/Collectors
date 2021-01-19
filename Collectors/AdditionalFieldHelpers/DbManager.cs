@@ -1,5 +1,6 @@
 ﻿using Collectors.Data;
 using Collectors.Data.Classes;
+using Collectors.Models.Comments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,19 @@ namespace Collectors.Classes
                 if (!Db.Tags.Contains(new Tag { Name = tag }))
                     Db.Tags.Add(new Tag { Name = tag });
             Save();
+        }
+
+        public void AddComment(string message, string userName, string groupId)
+        {
+            Db.Comments.Add(new Comment { UserName = userName, Content = message, ItemId = Int64.Parse(groupId) });
+            Save();
+        }
+
+        public CommentModel GetCommentsById(long id)
+        {
+            var Comments = Db.Comments.Where(i => i.ItemId == id).ToList();
+            CommentModel m = new CommentModel { ItemId = id, Comments = Comments };
+            return m;
         }
 
         public CollectionItem GetItem(int itemId)
@@ -86,7 +100,7 @@ namespace Collectors.Classes
             var f2 = new FieldManager(e2).GetFieldByIndex(fieldIndex);
             if (f1 == null)
                 return -1;
-            if(f2 == null)
+            if (f2 == null)
                 return 1;
             return f1.CompareTo(f2);
         }
