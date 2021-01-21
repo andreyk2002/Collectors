@@ -14,16 +14,18 @@ using System.Threading.Tasks;
 namespace Collectors.Controllers
 {
     [Authorize(Roles = "admin,user")]
-    public partial class ItemsController :  Controller
+    public partial class ItemsController : Controller
     {
         private readonly AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();
         private readonly UserManager<IdentityUser> userManager;
         private readonly DbManager dbManager;
+        private readonly ModelHelper modelHelper;
 
         public ItemsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
             dbManager = new DbManager { Db = context};
+            modelHelper = new ModelHelper { DbManager = dbManager };
         }
 
         public IActionResult Index(int id)
@@ -31,7 +33,7 @@ namespace Collectors.Controllers
             ItemsListViewModel model;
             if (RequireSort(id))
                 return View(GetSortedItems());
-            model = GetItemsListModel(id);
+            model = modelHelper.GetItemsListModel(id);
             return View(model);
         }
 
@@ -43,7 +45,7 @@ namespace Collectors.Controllers
             fieldsSetter.SetAdditional(ia, item);
             dbManager.UpdateTags(ia.Tags);
             dbManager.AddItem(item);
-            return View(GetItemsListModel(ia.CollectionId));
+            return View(modelHelper.GetItemsListModel(ia.CollectionId));
         }   
 
         public ItemsListViewModel GetSortedItems()
@@ -52,18 +54,9 @@ namespace Collectors.Controllers
             return items ?? new ItemsListViewModel();
         }
 
-        private List<string> GetFieldsNames(Collection c, List<int> indexes)
-        {
-            List<string> result = new List<string>();
-            var fields = c.AdditionalItemsFields.Split(',');
-            foreach (var i in indexes)
-                result.Add(fields[i]);
-            return result;
-        }
-
         public IActionResult Add(ItemsListViewModel il)
         {
-            ItemModel model = GetItemModel(il);
+            ItemModel model = modelHelper.GetItemModel(il);
             ViewBag.Tags = dbManager.GetTagsFromServer();
             return View(model);
         }
@@ -84,7 +77,7 @@ namespace Collectors.Controllers
                 if (ia.Selected[i])
                 {
                     ViewBag.Item = items[i];
-                    return View(GetItemModel(ia));
+                    return View(modelHelper.GetItemModel(ia));
                 }
             return Redirect("Index?id=" + ia.CollectionId);
         }
@@ -141,31 +134,6 @@ namespace Collectors.Controllers
         private static bool RequireSort(int id)
         {
             return id == 0;
-        }
-        private static ItemModel GetItemModel(ItemsListViewModel il)
-        {
-            return new ItemModel
-            {
-                AdditionalFieldsNames = il.AdditionalFieldsNames ?? new List<string>(),
-                AdditionalFieldsIndexes = il.AdditionalFieldsIndexes ?? new List<int>(),
-                CollectionId = il.CollectionId
-            };
-        }
-        private ItemsListViewModel GetItemsListModel(int id)
-        {
-            Collection c = dbManager.GetCollectionById(id);
-            List<CollectionItem> items = dbManager.GetItemsInCollection(id);
-            ItemsListViewModel model = MakeModel(id, c, items);
-            return model;
-        }
-
-        private ItemsListViewModel MakeModel(int id, Collection c, List<CollectionItem> items)
-        {
-            ItemsListViewModel model = new ItemsListViewModel { Items = items, CollectionId = id };
-            model.AdditionalFieldsIndexes = fieldsSetter.IndexesFromMask(c.SelectedFieldsMask);
-            model.AdditionalFieldsNames = GetFieldsNames(c, model.AdditionalFieldsIndexes);
-            model.Selected = new List<bool>(new bool[items.Count]);
-            return model;
         }
     }
 }

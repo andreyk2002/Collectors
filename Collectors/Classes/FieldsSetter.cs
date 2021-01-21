@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Collectors.Classes
 {
-    interface FieldsSetter
+    public interface FieldsSetter
     {
         void SetInt(string value, int index);
         void SetString(string value, int index);

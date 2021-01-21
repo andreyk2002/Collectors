@@ -1,4 +1,6 @@
-﻿using Collectors.Models;
+﻿using Collectors.Classes;
+using Collectors.Data;
+using Collectors.Models;
 using Collectors.Roles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,9 +22,12 @@ namespace Collectors.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly DbManager DbManager;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> roleManager)
+        public HomeController(ApplicationDbContext db, ILogger<HomeController> logger, 
+            UserManager<IdentityUser> roleManager)
         {
+            this.DbManager = new DbManager { Db = db };
             _logger = logger;
             _userManager = roleManager;
         }
@@ -37,6 +42,12 @@ namespace Collectors.Controllers
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
             return View(currentUser);
+        }
+
+        public IActionResult Search(string searchString)
+        {
+            var results = DbManager.FindAll(searchString);
+            return View(results);
         }
 
         public IActionResult Privacy()
@@ -65,5 +76,6 @@ namespace Collectors.Controllers
         {
             return _userManager.GetRolesAsync(currentUser).Result.Count != 0;
         }
+
     }
 }

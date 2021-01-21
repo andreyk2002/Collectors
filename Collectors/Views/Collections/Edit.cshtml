@@ -10,7 +10,7 @@
 <link rel="stylesheet" src="~/css/createCollection.css" />
 <div class="container contact-form">
     <form method="post" enctype="multipart/form-data">
-        <h3 class="text-center">Editing your collection</h3>
+        <h3 class="text-center">@Localizer["Editing your collection"]</h3>
         <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
         <div class="row">
             <div class="col-md-6">
@@ -21,14 +21,16 @@
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>@Localizer["Old Image :"]</label>
+                    <label>@Localizer["Current image"]:</label>
                     @if (Model.OldImage != null)
                     {
                         <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.OldImage))" alt="@Localizer["View items"]" />
                     }
                     else
                     {
-                        <p>Image not set</p>
+                        <p>
+                            @Localizer["Image not set"]
+                        </p>
                     }
                 </div>
             </div>

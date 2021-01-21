@@ -17,24 +17,6 @@ namespace Collectors.Classes
             }
         }
 
-        public List<int> IndexesFromMask(int mask)
-        {
-            List<int> indexes = new List<int>();
-            int i = 15;
-            while (mask != 0)
-            {
-                int val = (int)Math.Pow(2, i);
-                if (mask - val >= 0)
-                {
-                    mask -= val;
-                    indexes.Add(i);
-                }
-                i--;
-            }
-            indexes.Reverse();
-            return indexes;
-        }
-
         public void SetAdditional(ItemModel ia, CollectionItem c)
         {
             FieldManager m = new FieldManager(c);

@@ -54,6 +54,30 @@ namespace Collectors.Classes
             return GetItemsByCollectionId(id).ToList();
         }
 
+        public List<CollectionItem> FindAll(string searchString)
+        {
+            if (string.IsNullOrEmpty(searchString))
+                return new List<CollectionItem>();
+            var result = Db.Items.Where(i => i.Name.Contains(searchString) || i.Tags.Contains(searchString)
+            || i.StringField1.Contains(searchString) || i.StringField2.Contains(searchString) || i.StringField3.Contains(searchString)
+            || i.TextField1.Contains(searchString) || i.TextField1.Contains(searchString) || i.TextField1.Contains(searchString)).ToList();
+            var searchInComments = Db.Comments.Where(c => c.Content.Contains(searchString));
+            foreach (var item in searchInComments){
+                result.Add(Db.Items.Find(item.ItemId));
+            }
+            var searchInCollection = Db.Collections.Where(c => c.ShortDescription.Contains(searchString)).ToList();
+            foreach(var c in searchInCollection)
+            {
+                var items = Db.Items.Where(i => i.CollectionId == c.Id);
+                foreach(var i in items)
+                {
+                    result.Add(i);
+                }
+            }
+            return result;
+
+        }
+
         public List<CollectionItem> GetSortedById(int id)
         {
             return GetItemsByCollectionId(id).OrderBy(i => i.Id).ToList();

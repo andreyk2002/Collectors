@@ -117,7 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Change/Add the image of collection" xml:space="preserve">
+    <value>Изменить изображение для коллекции</value>
+  </data>
+  <data name="Current image" xml:space="preserve">
+    <value>Текущее изображение</value>
+  </data>
+  <data name="Delete image and finish" xml:space="preserve">
+    <value>Удалить изображение и закончить</value>
+  </data>
   <data name="Editing your collection" xml:space="preserve">
     <value>Изменить вашу коллекцию</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Закончить</value>
+  </data>
+  <data name="Image not set" xml:space="preserve">
+    <value>Изображение не выбрано</value>
+  </data>
+  <data name="Modify the description" xml:space="preserve">
+    <value>Изменить описание</value>
   </data>
 </root>
