@@ -58,26 +58,9 @@ namespace Collectors.Classes
         {
             if (string.IsNullOrEmpty(searchString))
                 return new List<CollectionItem>();
-            var result = Db.Items.Where(i => i.Name.Contains(searchString) || i.Tags.Contains(searchString)
-            || i.StringField1.Contains(searchString) || i.StringField2.Contains(searchString) || i.StringField3.Contains(searchString)
-            || i.TextField1.Contains(searchString) || i.TextField1.Contains(searchString) || i.TextField1.Contains(searchString)).ToList();
-            var searchInComments = Db.Comments.Where(c => c.Content.Contains(searchString));
-            foreach (var item in searchInComments){
-                result.Add(Db.Items.Find(item.ItemId));
-            }
-            var searchInCollection = Db.Collections.Where(c => c.ShortDescription.Contains(searchString)).ToList();
-            foreach(var c in searchInCollection)
-            {
-                var items = Db.Items.Where(i => i.CollectionId == c.Id);
-                foreach(var i in items)
-                {
-                    result.Add(i);
-                }
-            }
+            var result = MakeSearchQuery(searchString);
             return result;
-
         }
-
         public List<CollectionItem> GetSortedById(int id)
         {
             return GetItemsByCollectionId(id).OrderBy(i => i.Id).ToList();
@@ -131,6 +114,44 @@ namespace Collectors.Classes
         private IQueryable<CollectionItem> GetItemsByCollectionId(int id)
         {
             return Db.Items.Where(i => i.CollectionId == id);
+        }
+        private List<CollectionItem> MakeSearchQuery(string searchString)
+        {
+            List<CollectionItem> results = SearchInItems(searchString).ToList();
+            results.AddRange(SearchInCollections(searchString));
+            results.AddRange(SearchInComments(searchString));
+            return results.ToList();
+        }
+
+        private IQueryable<CollectionItem> SearchInCollections(string searchString)
+        {
+            var themes = Enum.GetValues(typeof(CollectionTheme));
+            var query = (from collections in Db.Collections
+                         join items in Db.Items
+                   on collections.Id equals items.CollectionId
+                   where collections.ShortDescription.Contains(searchString)
+                   select items);
+            return query;
+        }
+
+        private IQueryable<CollectionItem> SearchInComments(string searchString)
+        {
+            return from items in Db.Items
+                   join comments in Db.Comments
+                   on items.Id equals comments.ItemId
+                   where comments.Content.Contains(searchString)
+                   select items;
+        }
+
+        private IQueryable<CollectionItem> SearchInItems(string searchString)
+        {
+            return (from items in Db.Items
+                    where items.Name.Contains(searchString) || items.Tags.Contains(searchString)
+                   || items.StringField1.Contains(searchString) || items.StringField2.Contains(searchString)
+                   || items.StringField3.Contains(searchString) || items.TextField1.Contains(searchString)
+                   || items.TextField2.Contains(searchString) || items.TextField3.Contains(searchString)
+                    select items
+            );
         }
 
     }
