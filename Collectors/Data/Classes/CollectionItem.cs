@@ -14,9 +14,7 @@ namespace Collectors.Data.Classes
 
         public int CollectionId { get; set; }
         public string Name { get; set; }
-        //In the beggining this filds will be inactive
         public string Tags { get; set; }
-
         //public int Likes { get; set; }
         public int IntField1 { get; set; }
         public int IntField2 { get; set; }

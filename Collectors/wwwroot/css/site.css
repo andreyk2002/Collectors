@@ -75,6 +75,11 @@ body {
     color: mediumvioletred;
 }
 
+.tags{
+    border-radius:15px;
+    background-color:aqua;
+    border:0px;
+}
 
 .tags-look .tagify__dropdown__item {
     display: inline-block;

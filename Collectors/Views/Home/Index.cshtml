@@ -5,6 +5,12 @@
 }
 <div>
     @await Html.PartialAsync("_SelectLanguagePartial")
+    @{
+        if (ViewBag.Role != null && ViewBag.Role[0] == "admin")
+        {
+            <a asp-action="Index" asp-controller="Admin">@Localizer["ManageUsers"]</a>
+        }
+    }
 </div>
 <div class="text-center">
 
@@ -12,28 +18,16 @@
 
     <div class="col-md-4 float-right m-0" id="tagsCloud">
         <h4>@Localizer["Search items by tags"]</h4>
-        <form  asp-action="SearchTags" asp-controller="Home">
+        <form asp-action="SearchTags" asp-controller="Home">
             @{
                 for (int i = 0; i < ViewBag.Tags.Length; i++)
                 {
-                    <button class="m-1 tags" style="border-radius:25%">@ViewBag.Tags[i]</button>
+                    <button class="m-1 tags">@ViewBag.Tags[i]</button>
                 }
                 <input id="tagSearch" type="hidden" name="tag" />
             }
         </form>
     </div>
-    @{
-
-        if (ViewBag.Role != null && ViewBag.Role[0] == "admin")
-        {
-            <h2>@Localizer["AdminMessage"]</h2>
-            <form asp-action="Index" asp-controller="Admin">
-                <button class="nav-link">@Localizer["ManageUsers"]</button>
-            </form>
-        }
-
-
-    }
 
 </div>
 

@@ -162,6 +162,9 @@
   <data name="Item name" xml:space="preserve">
     <value>Название элемента</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
   <data name="Looks good!" xml:space="preserve">
     <value>Тут всё верно!</value>
   </data>
