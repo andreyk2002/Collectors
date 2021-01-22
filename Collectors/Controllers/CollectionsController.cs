@@ -1,4 +1,5 @@
-﻿using Collectors.Data;
+﻿using Collectors.Classes;
+using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
 using Collectors.Roles;
@@ -19,21 +20,21 @@ namespace Collectors.Controllers
     [Authorize(Roles = "admin,user")]
     public class CollectionsController : Controller
     {
-        private readonly ApplicationDbContext db;
+        private readonly DbManager dbManager;
         private readonly IWebHostEnvironment webHost;
         private readonly UserManager<IdentityUser> userManager;
 
         public CollectionsController(ApplicationDbContext context, IWebHostEnvironment webHost, UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
-            db = context;
+            dbManager = new DbManager { Db = context };
             this.webHost = webHost;
         }
         public IActionResult Index()
         {
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.Collections = User.IsInRole(UserRoles.admin.ToString()) ?
-             db.Collections.ToList() : db.Collections.Where(c =>
-                 c.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+             dbManager.Db.Collections : dbManager.GetCollectionByUserId(id);
             return View();
         }
 
@@ -48,22 +49,20 @@ namespace Collectors.Controllers
             Collection collection = CreateCollectionFromModel(model);
             collection.SelectedFieldsMask = CreateMaskOfSelectedFields(model.AdditionalFields);
             SetCollectionImageInBytes(model.Image, collection);
-            db.Collections.Add(collection);
-            db.SaveChanges();
+            dbManager.AddCollection(collection);
             return RedirectToAction("Index");
         }
 
         public IActionResult Delete(int id)
         {
-            Collection c = GetCollectionById(id);
-            db.Collections.Remove(c);
-            db.SaveChanges();
+            Collection c = dbManager.GetCollectionById(id);
+            dbManager.RemoveCollection(c);
             return RedirectToAction("Index");
         }
 
         public IActionResult Edit(int id)
         {
-            Collection c = GetCollectionById(id);
+            Collection c = dbManager.GetCollectionById(id);
             return View(new CollectionEditModel
             {
                 CollectionId = id,
@@ -75,17 +74,14 @@ namespace Collectors.Controllers
         [HttpPost]
         public IActionResult Edit(CollectionEditModel collection)
         {
-            Collection c = GetCollectionById(collection.CollectionId);
+            Collection c = dbManager.GetCollectionById(collection.CollectionId);
             ChangeImage(collection, c);
             c.ShortDescription = collection.ShortDescription;
-            db.SaveChanges();
+            dbManager.Save();
 
             return RedirectToAction("Index");
         }
-        private Collection GetCollectionById(int id)
-        {
-            return db.Collections.First(c => c.Id == id);
-        }
+      
         private Collection CreateCollectionFromModel(CollectionCreateModel model)
         {
             return new Collection

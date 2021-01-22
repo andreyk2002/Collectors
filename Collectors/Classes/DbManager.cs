@@ -40,15 +40,20 @@ namespace Collectors.Classes
             return m;
         }
 
-        public CollectionItem GetItem(int itemId)
+        public IEnumerable<object> GetCollectionByUserId(string id)
         {
-            return Db.Items.FirstOrDefault(i => i.Id == itemId);
+            return Db.Collections.Where(c => c.UserId == id);
         }
 
         public Collection GetCollectionById(int id)
         {
             return Db.Collections.First(c => c.Id == id);
         }
+        public CollectionItem GetItem(int itemId)
+        {
+            return Db.Items.FirstOrDefault(i => i.Id == itemId);
+        }
+
         public List<CollectionItem> GetItemsInCollection(int id)
         {
             return GetItemsByCollectionId(id).ToList();
@@ -86,6 +91,18 @@ namespace Collectors.Classes
         public List<CollectionItem> SearchByName(int id, string name)
         {
             return GetItemsByCollectionId(id).Where(i => i.Name.Contains(name)).ToList();
+        }
+
+        public void AddCollection(Collection c)
+        {
+            Db.Collections.Add(c);
+            Save();
+        }
+
+        public void RemoveCollection(Collection c)
+        {
+            Db.Collections.Remove(c);
+            Save();
         }
         public void AddItem(CollectionItem item)
         {
