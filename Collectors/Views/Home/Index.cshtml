@@ -7,15 +7,36 @@
     @await Html.PartialAsync("_SelectLanguagePartial")
 </div>
 <div class="text-center">
-    <h1 class="display-4">@Localizer["Message"]</h1>
+
+    <h2 class="display-4">@Localizer["Message"]</h2>
+
+    <div class="col-md-4 float-right m-0" id="tagsCloud">
+        <h4>@Localizer["Search items by tags"]</h4>
+        <form  asp-action="SearchTags" asp-controller="Home">
+            @{
+                for (int i = 0; i < ViewBag.Tags.Length; i++)
+                {
+                    <button class="m-1 tags" style="border-radius:25%">@ViewBag.Tags[i]</button>
+                }
+                <input id="tagSearch" type="hidden" name="tag" />
+            }
+        </form>
+    </div>
     @{
+
         if (ViewBag.Role != null && ViewBag.Role[0] == "admin")
         {
             <h2>@Localizer["AdminMessage"]</h2>
             <form asp-action="Index" asp-controller="Admin">
-                <button class="btn-primary">@Localizer["ManageUsers"]</button>
+                <button class="nav-link">@Localizer["ManageUsers"]</button>
             </form>
         }
+
+
     }
 
 </div>
+
+@section scripts{
+    <script src="~/js/tagsCloud.js"></script>
+}

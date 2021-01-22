@@ -33,7 +33,3 @@ for (let i = 0; i < buttons.length; i++) {
         inputForIndex.value = i;
     });  
 }
-//    e.addEventListener('click', function () {
-//        inputForIndex.value = i;
-//    })
-//});

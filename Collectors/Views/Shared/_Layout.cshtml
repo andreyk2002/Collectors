@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Collectors</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/tagify.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/profile.css" />
-    <link rel="stylesheet" href="~/css/tagify.css" />
 </head>
 <body>
     <header class="darkmode-ignore w-100" style="background-color:#9209ce">
@@ -33,7 +33,7 @@
                 </ul>
                 <partial name="_LoginPartial" />
                 <form class="form-inline my-2 my-lg-0">
-                    <input name="searchString" class="form-control mr-sm-2" type="search" placeholder=@Localizer["Search"]
+                    <input id ="searchInput" name="searchString" class="form-control mr-sm-2" type="search" placeholder=@Localizer["Search"]
                            aria-label=@Localizer["Search"]>
                     <button asp-controller="Home" asp-action="Search" class="btn btn-success my-2 my-sm-0" type="submit">
                         <img src="~/bootstrap-icons/icons/search.svg" />
@@ -57,7 +57,6 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Darkmode.js/darkmode-js.min.js"></script>
     <script src="~/js/enableDarkMode.js"></script>
     <script src="~/js/tagify/tagify.min.js"></script>

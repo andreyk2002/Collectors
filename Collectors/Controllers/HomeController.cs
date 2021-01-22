@@ -41,6 +41,7 @@ namespace Collectors.Controllers
                     await _userManager.AddToRoleAsync(currentUser, UserRoles.user.ToString());
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
+            ViewBag.Tags = DbManager.GetTagsFromServer();
             return View(currentUser);
         }
 
@@ -48,6 +49,12 @@ namespace Collectors.Controllers
         {
             var results = DbManager.FindAll(searchString);
             return View(results);
+        }
+
+        public IActionResult SearchTags(string tag)
+        {
+            var results = DbManager.FindAll(tag);
+            return View("Search",results);
         }
 
         public IActionResult Privacy()
