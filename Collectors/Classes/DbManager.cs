@@ -103,6 +103,10 @@ namespace Collectors.Classes
         {
             Db.Collections.Remove(c);
             Save();
+            var itemsToRemove = Db.Items.Where(i => i.CollectionId == c.Id);
+            foreach (var item in itemsToRemove)
+                RemoveItem(item);
+
         }
         public void AddItem(CollectionItem item)
         {
@@ -112,8 +116,11 @@ namespace Collectors.Classes
         public void RemoveItem(CollectionItem i)
         {
             Db.Items.Remove(i);
+            var commentsToRemove = Db.Comments.Where(c => c.ItemId == i.Id);
+            Db.Comments.RemoveRange(commentsToRemove);
             Save();
         }
+
         public void Save()
         {
             Db.SaveChanges();

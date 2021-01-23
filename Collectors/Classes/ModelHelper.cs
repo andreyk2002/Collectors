@@ -1,6 +1,7 @@
 ﻿using Collectors.Classes;
 using Collectors.Data.Classes;
 using Collectors.Models;
+using Collectors.Models.Item;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,15 @@ namespace Collectors.Classes
             return model;
         }
 
+        public List<ItemLikesModel> MakeModel(List<CollectionItem> items)
+        {
+            List<ItemLikesModel> model = new List<ItemLikesModel>();
+            foreach(var i in items)
+            {
+                model.Add(new ItemLikesModel { Item = i, IsLiked = false });
+            }
+            return model;
+        }
         private List<int> IndexesFromMask(int mask)
         {
             List<int> indexes = new List<int>();

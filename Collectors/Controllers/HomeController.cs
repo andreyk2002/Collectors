@@ -1,6 +1,8 @@
 ﻿using Collectors.Classes;
 using Collectors.Data;
+using Collectors.Data.Classes;
 using Collectors.Models;
+using Collectors.Models.Item;
 using Collectors.Roles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +25,7 @@ namespace Collectors.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly DbManager DbManager;
+        private readonly ModelHelper modelHelper = new ModelHelper();
 
         public HomeController(ApplicationDbContext db, ILogger<HomeController> logger, 
             UserManager<IdentityUser> roleManager)
@@ -48,13 +51,22 @@ namespace Collectors.Controllers
         public IActionResult Search(string searchString)
         {
             var results = DbManager.FindAll(searchString);
-            return View(results);
+            List<ItemLikesModel> model = modelHelper.MakeModel(results);
+            ViewBag.searchString = searchString;
+            return View(model);
+        }
+
+        public IActionResult Like(string searchStr, int itemId)
+        {
+            CollectionItem item = DbManager.GetItem(itemId);
+            item.Likes++;
+            DbManager.Save();
+            return Redirect("Search?searchString=" + searchStr);
         }
 
         public IActionResult SearchTags(string tag)
         {
-            var results = DbManager.FindAll(tag);
-            return View("Search",results);
+            return Redirect("Search?searchString=" + tag);
         }
 
         public IActionResult Privacy()
