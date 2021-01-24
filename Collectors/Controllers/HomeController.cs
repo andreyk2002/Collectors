@@ -24,15 +24,16 @@ namespace Collectors.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly DbManager DbManager;
-        private readonly ModelHelper modelHelper = new ModelHelper();
+        private readonly DbManager _dbManager;
+        private readonly ModelHelper _modelHelper;
 
         public HomeController(ApplicationDbContext db, ILogger<HomeController> logger, 
             UserManager<IdentityUser> roleManager)
         {
-            this.DbManager = new DbManager { Db = db };
+            this._dbManager = new DbManager { Db = db };
             _logger = logger;
             _userManager = roleManager;
+            _modelHelper = new ModelHelper { DbManager = _dbManager };
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -44,23 +45,23 @@ namespace Collectors.Controllers
                     await _userManager.AddToRoleAsync(currentUser, UserRoles.user.ToString());
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
-            ViewBag.Tags = DbManager.GetTagsFromServer();
+            StartModel model = _modelHelper.MakeStartModel();
             return View(currentUser);
         }
 
         public IActionResult Search(string searchString)
         {
-            var results = DbManager.FindAll(searchString);
-            List<ItemLikesModel> model = modelHelper.MakeModel(results);
+            var results = _dbManager.FindAll(searchString);
+            List<ItemLikesModel> model = _modelHelper.MakeModel(results);
             ViewBag.searchString = searchString;
             return View(model);
         }
 
         public IActionResult Like(string searchStr, int itemId)
         {
-            CollectionItem item = DbManager.GetItem(itemId);
+            CollectionItem item = _dbManager.GetItem(itemId);
             item.Likes++;
-            DbManager.Save();
+            _dbManager.Save();
             return Redirect("Search?searchString=" + searchStr);
         }
 

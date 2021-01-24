@@ -71,6 +71,22 @@ namespace Collectors.Classes
             return GetItemsByCollectionId(id).OrderBy(i => i.Id).ToList();
         }
 
+        public List<Collection> GetBiggestCollections(int defualtCollectionsCount)
+        {
+            var collectionsId = Db.Items.GroupBy(i => i.CollectionId)
+                .Select(c => new { CollectionId = c.Key, InstanceCount = c.Count() })
+                .OrderByDescending(c => c.InstanceCount)
+                .Take(defualtCollectionsCount);
+            var biggestCollection = Db.Collections.Join(collectionsId, c => c.Id, ci => ci.CollectionId, (c,ci) => c);
+            return biggestCollection.ToList();
+        }
+
+        public List<CollectionItem> GetLatestItems(int itemsCount)
+        {
+            var latest = Db.Items.OrderByDescending(i => i.Id).Take(itemsCount);
+            return latest.ToList();
+        }
+
         public List<CollectionItem> GetSortedByName(int id)
         {
             return GetItemsByCollectionId(id).OrderBy(i => i.Name).ToList();

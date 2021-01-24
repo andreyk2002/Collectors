@@ -11,6 +11,9 @@ namespace Collectors.Classes
     [Authorize(Roles = "admin,user")]
     public class ModelHelper
     {
+        public const int DefualtCollectionsCount = 2;
+
+        public const int DefaultItemsCount = 5;
         public DbManager DbManager { get; set; }
 
       
@@ -49,6 +52,16 @@ namespace Collectors.Classes
             }
             return model;
         }
+
+        public StartModel MakeStartModel()
+        {
+            StartModel model = new StartModel();
+            model.Tags = DbManager.GetTagsFromServer();
+            model.LatestItems = DbManager.GetLatestItems(DefaultItemsCount);
+            model.BiggestCollections = DbManager.GetBiggestCollections(DefualtCollectionsCount);
+            return model;
+        }
+
         private List<int> IndexesFromMask(int mask)
         {
             List<int> indexes = new List<int>();
