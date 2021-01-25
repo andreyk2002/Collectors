@@ -74,17 +74,11 @@ namespace Collectors.Classes
         public List<Collection> GetBiggestCollections(int defualtCollectionsCount)
         {
             var collectionsId = Db.Items.GroupBy(i => i.CollectionId)
-                .Select(c => new { CollectionId = c.Key, InstanceCount = c.Count() })
-                .OrderByDescending(c => c.InstanceCount)
+                .Select(c => new { CollectionId = c.Key, ItemsCount = c.Count() })
+                .OrderByDescending(c => c.ItemsCount)
                 .Take(defualtCollectionsCount);
-            var biggestCollection = Db.Collections.Join(collectionsId, c => c.Id, ci => ci.CollectionId, (c,ci) => c);
+            var biggestCollection = Db.Collections.Join(collectionsId, c => c.Id, ci => ci.CollectionId, (c, ci) => c);
             return biggestCollection.ToList();
-        }
-
-        public List<CollectionItem> GetLatestItems(int itemsCount)
-        {
-            var latest = Db.Items.OrderByDescending(i => i.Id).Take(itemsCount);
-            return latest.ToList();
         }
 
         public List<CollectionItem> GetSortedByName(int id)
@@ -119,7 +113,7 @@ namespace Collectors.Classes
         {
             Db.Collections.Remove(c);
             Save();
-            var itemsToRemove = Db.Items.Where(i => i.CollectionId == c.Id);
+            var itemsToRemove = Db.Items.Where(i => i.CollectionId == c.Id).ToList();
             foreach (var item in itemsToRemove)
                 RemoveItem(item);
 
@@ -132,6 +126,7 @@ namespace Collectors.Classes
         public void RemoveItem(CollectionItem i)
         {
             Db.Items.Remove(i);
+            Save();
             var commentsToRemove = Db.Comments.Where(c => c.ItemId == i.Id);
             Db.Comments.RemoveRange(commentsToRemove);
             Save();
@@ -169,8 +164,8 @@ namespace Collectors.Classes
             var query = (from collections in Db.Collections
                          join items in Db.Items
                    on collections.Id equals items.CollectionId
-                   where collections.ShortDescription.Contains(searchString)
-                   select items);
+                         where collections.ShortDescription.Contains(searchString)
+                         select items);
             return query;
         }
 

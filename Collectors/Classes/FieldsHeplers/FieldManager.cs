@@ -10,7 +10,7 @@ namespace Collectors.Classes
     public class FieldManager : IFieldManager
     {
         const int FieldsForType = 3;
-        private CollectionItem Item { get; set; }
+        public CollectionItem Item { get; set; }
 
         public FieldManager(CollectionItem item)
         {

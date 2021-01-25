@@ -10,7 +10,7 @@ namespace Collectors.Models
     {
         public List<Collection> BiggestCollections { get; set; }
 
-        public List<CollectionItem> LatestItems { get; set; }
+        public List<ItemModel> LatestItems { get; set; }
 
         public string[] Tags { get; set; }
     }

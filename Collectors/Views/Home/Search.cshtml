@@ -1,12 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
-@using Collectors.Models;
 @using Collectors.Classes;
-@using Collectors.Data.Classes;
+@using Collectors.Models.Item;
 @using Microsoft.AspNetCore.Identity
-@inject IViewLocalizer Localizer;
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 @inject SignInManager<IdentityUser> SignInManager
-@using Collectors.Models.Item; 
 @model List<ItemLikesModel>;
 
 @{

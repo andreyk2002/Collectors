@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Collectors.Classes;
 @inject IViewLocalizer Localizer;
 @{
     ViewData["Title"] = "Home Page";
 }
+@model StartModel;
 <div>
     @await Html.PartialAsync("_SelectLanguagePartial")
     @{
@@ -13,19 +15,23 @@
     }
 </div>
 <div class="text-center">
-
     <div id="carouselExampleControls" class="carousel slide bg-info p-4 w-100" data-ride="carousel">
         <h3>Most interesing collections</h3>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img class="center-block w-auto" src="~/img/ImageNotSet.png" alt="First slide" style="height:350px">
+                <img class="center-block w-auto" src="~/img/coin-collection.jpg" alt="First slide" style="height:300px">
             </div>
             @{
-                for (int i = 0; i < 5; i++)
+                foreach (var collection in Model.BiggestCollections)
                 {
-                    <div class="carousel-item">
-                        <img class="center-block w-auto" src="~/img/123.jpg" alt="Second slide" style="height:350px">
-                    </div>
+                    if (collection.Image != null)
+                    {
+                        <div class="carousel-item">
+                            <img class="center-block w-auto" src="data:image/jpeg;base64,
+                             @(Convert.ToBase64String(collection.Image))"
+                                 alt="Second slide" style="height:300px">
+                        </div>
+                    }
                 }
             }
             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -39,42 +45,43 @@
         </div>
     </div>
     <div class="col-md-6 float-left mt-4 mb-5">
-        <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Item name</h5>
-                <p class="card-text">Tags of the item</p>
-            </div>
-            <ul class="list-group list-group-flush">
-                @*@{
-                    manager = new FieldManager(Model.Items[i]);
-                }
-                @foreach (var j in Model.AdditionalFieldsIndexes)
-                {
-                    <li class="list-group-item">
-                        @Html.Raw(manager.GetFieldByIndex(j))</li>
-                }*@
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Vestibulum at eros</li>
-            </ul>
-        </div>
+        @{
+            foreach (var item in Model.LatestItems)
+            {
+                <div class="card m-4 bg-info" style="width: 20rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Tags</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                     
+                        @foreach(var value in item.AdditionalFieldsValues)
+                        {
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                <li class="list-group-item">
+                                    @Html.Raw(value)
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            }
+        }
     </div>
     <div class="col-md-6 float-right mt-4 mb-5" id="tagsCloud">
         <h4>@Localizer["Search items by tags"]</h4>
         <form asp-action="SearchTags" asp-controller="Home">
             @{
-                for (int i = 0; i < ViewBag.Tags.Length; i++)
+                for (int i = 0; i < Model.Tags.Length; i++)
                 {
-                    <button class="m-1 tags">@ViewBag.Tags[i]</button>
+                    <button type="submit" class="m-1 tags">@Model.Tags[i]</button>
                 }
                 <input id="tagSearch" type="hidden" name="tag" />
             }
         </form>
     </div>
-    <div id="blank" class="col-md-12" style="height:500px">
-
-    </div>
+   
 </div>
 
 @section scripts{

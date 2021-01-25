@@ -1,10 +1,13 @@
-﻿using Collectors.Classes;
+﻿using Collectors.Areas.Identity.Data;
+using Collectors.Classes;
+using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
 using Collectors.Models.Item;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Collectors.Classes
 {
@@ -16,7 +19,7 @@ namespace Collectors.Classes
         public const int DefaultItemsCount = 5;
         public DbManager DbManager { get; set; }
 
-      
+
         public ItemModel GetItemModel(ItemsListViewModel il)
         {
             return new ItemModel
@@ -26,11 +29,10 @@ namespace Collectors.Classes
                 CollectionId = il.CollectionId
             };
         }
-        public ItemsListViewModel GetItemsListModel(int id)
+        public ItemsListViewModel GetItemsListModel(Collection c)
         {
-            Collection c = DbManager.GetCollectionById(id);
-            List<CollectionItem> items = DbManager.GetItemsInCollection(id);
-            ItemsListViewModel model = MakeModel(id, c, items);
+            List<CollectionItem> items = DbManager.GetItemsInCollection(c.Id);
+            ItemsListViewModel model = MakeModel(c.Id, c, items);
             return model;
         }
 
@@ -46,7 +48,7 @@ namespace Collectors.Classes
         public List<ItemLikesModel> MakeModel(List<CollectionItem> items)
         {
             List<ItemLikesModel> model = new List<ItemLikesModel>();
-            foreach(var i in items)
+            foreach (var i in items)
             {
                 model.Add(new ItemLikesModel { Item = i, IsLiked = false });
             }
@@ -57,9 +59,47 @@ namespace Collectors.Classes
         {
             StartModel model = new StartModel();
             model.Tags = DbManager.GetTagsFromServer();
-            model.LatestItems = DbManager.GetLatestItems(DefaultItemsCount);
+            model.LatestItems = GetLatestItems(DefaultItemsCount);
             model.BiggestCollections = DbManager.GetBiggestCollections(DefualtCollectionsCount);
             return model;
+        }
+
+        private List<ItemModel> GetLatestItems(int itemsCount)
+        {
+            ApplicationDbContext Db = DbManager.Db;
+
+            var result = Db.Collections.Join(Db.Items, c => c.Id, i => i.CollectionId,
+                (c, i) => new { Item = i, Collection = c })
+                .OrderByDescending(c => c.Item.Id)
+                .Take(itemsCount);
+            List<ItemModel> model = new List<ItemModel>();
+            foreach (var element in result)
+            {
+                model.Add(GetItemModel(element.Collection, element.Item));
+            }
+            return model;
+        }
+
+        private ItemModel GetItemModel(Collection c, CollectionItem i)
+        {
+            ItemModel model = new ItemModel
+            {
+                Name = i.Name,
+                Tags = i.Tags,
+                AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask)
+            };
+            model.AdditionalFieldsNames = GetFieldsNames(c, model.AdditionalFieldsIndexes);
+            model.AdditionalFieldsValues = GetFieldsValues(model.AdditionalFieldsIndexes, i);
+            return model;
+        }
+
+        private List<string> GetFieldsValues(List<int> additionalFieldsIndexes, CollectionItem item)
+        {
+            FieldManager manager = new FieldManager(item);
+            List<string> fieldsValues = new List<string>();
+            foreach(int i in additionalFieldsIndexes)
+                fieldsValues.Add(manager.GetFieldByIndex(i));
+            return fieldsValues;
         }
 
         private List<int> IndexesFromMask(int mask)

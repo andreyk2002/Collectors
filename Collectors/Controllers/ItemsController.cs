@@ -2,6 +2,7 @@
 using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
+using Collectors.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +29,15 @@ namespace Collectors.Controllers
             modelHelper = new ModelHelper { DbManager = dbManager };
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> IndexAsync(int id)
         {
             ItemsListViewModel model;
+            Collection c = dbManager.GetCollectionById(id);
             if (RequireSort(id))
                 return View(GetSortedItems());
-            model = modelHelper.GetItemsListModel(id);
+            model = modelHelper.GetItemsListModel(c);
+            if (! await CheckUserAsync(c))
+                return Forbid();
             return View(model);
         }
 
@@ -45,7 +49,8 @@ namespace Collectors.Controllers
             fieldsSetter.SetAdditional(ia, item);
             dbManager.UpdateTags(ia.Tags);
             dbManager.AddItem(item);
-            return View(modelHelper.GetItemsListModel(ia.CollectionId));
+            Collection c = dbManager.GetCollectionById(ia.CollectionId);
+            return View(modelHelper.GetItemsListModel(c));
         }   
 
         public ItemsListViewModel GetSortedItems()
@@ -126,9 +131,15 @@ namespace Collectors.Controllers
             PutItemsListModel(model);
             return Redirect("Index");
         }
-        private void PutItemsListModel(ItemsListViewModel model)
+        public void PutItemsListModel(ItemsListViewModel model)
         {
             TempDataExtensions.Put(TempData, "Items", model);
+        }
+
+        public async Task<bool> CheckUserAsync(Collection c)
+        {
+            IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
+            return currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString());
         }
 
         private static bool RequireSort(int id)

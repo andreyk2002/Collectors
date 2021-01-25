@@ -53,16 +53,20 @@ namespace Collectors.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             Collection c = dbManager.GetCollectionById(id);
+            if (!await CheckUserAsync(c))
+                return Forbid();
             dbManager.RemoveCollection(c);
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> EditAsync(int id)
         {
             Collection c = dbManager.GetCollectionById(id);
+            if (! await CheckUserAsync(c))
+                return Forbid();
             return View(new CollectionEditModel
             {
                 CollectionId = id,
@@ -81,8 +85,14 @@ namespace Collectors.Controllers
 
             return RedirectToAction("Index");
         }
-      
-        private Collection CreateCollectionFromModel(CollectionCreateModel model)
+
+        public async Task<bool> CheckUserAsync(Collection c)
+        {
+            IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
+            return currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString());
+        }
+
+        public Collection CreateCollectionFromModel(CollectionCreateModel model)
         {
             return new Collection
             {
@@ -116,19 +126,12 @@ namespace Collectors.Controllers
         {
             if (Image != null)
             {
-                collection.Image = ConvertImageToBytes(Image);
+                ImageProcessor processor = new ImageProcessor();
+                collection.Image = processor.ConvertImageToBytes(Image);
             }
         }
 
-        private byte[] ConvertImageToBytes(IFormFile Image)
-        {
-            byte[] imageData = null;
-            using (var binaryReader = new BinaryReader(Image.OpenReadStream()))
-            {
-                imageData = binaryReader.ReadBytes((int)Image.Length);
-            }
-            return imageData;
-        }
+      
     }
 }
 

@@ -46,7 +46,7 @@ namespace Collectors.Controllers
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
             StartModel model = _modelHelper.MakeStartModel();
-            return View(currentUser);
+            return View(model);
         }
 
         public IActionResult Search(string searchString)

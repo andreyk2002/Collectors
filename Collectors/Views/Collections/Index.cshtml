@@ -20,15 +20,15 @@
 
             <div class="card m-3 d-inline-block p-1 w-50 darkmode-ignore" style="background-color:cornflowerblue;">
                     <form>
-                        <input asp-for="Id" value="@element.Id" type="hidden" />
+                        <input class="btn-link" asp-for="Id" value="@element.Id" type="hidden" />
                         <button type="submit" asp-action="Edit">
                             <img src="~/bootstrap-icons/icons/pencil.svg" />
                         </button>
 
-                        <button type="submit" asp-action="Delete">
+                        <button class="btn-link" type="submit" asp-action="Delete">
                             <img src="~/bootstrap-icons/icons/trash.svg" />
                         </button>
-                        <button type="submit" asp-action="Index" asp-controller="Items">
+                        <button class="btn-link" type="submit" asp-action="Index" asp-controller="Items">
                             <img src="~/bootstrap-icons/icons/eye.svg" />
                         </button>
                       
