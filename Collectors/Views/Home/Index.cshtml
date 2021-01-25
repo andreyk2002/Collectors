@@ -50,7 +50,7 @@
             {
                 <div class="card m-4 bg-info" style="width: 20rem;">
                     <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
+                                <h5 class="card-title">@Html.ActionLink(item.Name, "Index", "Item", new { id = item.ItemId}, null)</h5>
                         <p class="card-text">@item.Tags</p>
                     </div>
                     <ul class="list-group list-group-flush">

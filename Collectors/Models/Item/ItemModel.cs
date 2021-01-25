@@ -14,6 +14,7 @@ namespace Collectors.Models
         [StringLength(255)]
         public string Name { get; set; }
         public string Tags { get; set; }
+        public long ItemId { get; set; }
         public int CollectionId { get; set; }
         public List<string> AdditionalFieldsNames { get; set; }
         public List<string> AdditionalFieldsValues { get; set; }

@@ -84,6 +84,7 @@ namespace Collectors.Classes
         {
             ItemModel model = new ItemModel
             {
+                ItemId = i.Id,
                 Name = i.Name,
                 Tags = i.Tags,
                 AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask)
