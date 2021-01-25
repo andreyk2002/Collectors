@@ -2,7 +2,6 @@
 using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
-using Collectors.Models.Item;
 using Collectors.Roles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,9 +51,8 @@ namespace Collectors.Controllers
         public IActionResult Search(string searchString)
         {
             var results = _dbManager.FindAll(searchString);
-            List<ItemLikesModel> model = _modelHelper.MakeModel(results);
             ViewBag.searchString = searchString;
-            return View(model);
+            return View(results.ToList());
         }
 
         public IActionResult Like(string searchStr, int itemId)

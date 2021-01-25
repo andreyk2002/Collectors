@@ -41,19 +41,19 @@
                     string name = FieldManager.GetTypeByIndex(index);
                 <div class="col-md-4 mb-3">
                     <input asp-for="@Model.AdditionalFieldsIndexes[j]"
-                           value="@Model.AdditionalFieldsIndexes[j]" type="hidden" />
+                           value="@Model.AdditionalFieldsIndexes[j]" type="hidden"/>
                     <label asp-for="@Model.AdditionalFieldsValues[j]">
                         @Model.AdditionalFieldsNames[j]
                     </label>
                     @if (name != "textarea")
                     {
                         <input class="form-control m-2"
-                               asp-for="@Model.AdditionalFieldsValues[j]" type="@name" />
+                               asp-for="@Model.AdditionalFieldsValues[j]" type="@name" required/>
                     }
                     else
                     {
                         <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
-                                  class="form-control m-2"></textarea>
+                                  class="form-control m-2" required></textarea>
                     }
                     <div class="valid-feedback">
                         @SharedLocalizer["Looks good!"]
