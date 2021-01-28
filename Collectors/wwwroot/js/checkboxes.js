@@ -1,24 +1,21 @@
 ﻿'use strict'
 
-let dataTable = document.getElementById('data-table');
-let checkItAll = dataTable.querySelector('input[name="select_all"]');
-let inputs = dataTable.querySelectorAll('tbody>tr>td>input');
-let deleteButton = document.getElementById('Delete');
-let blockButton = document.getElementById('Block');
-let unblockButton = document.getElementById('Unblock');
+let checkItAll = document.getElementById('selectAll');
+let inputs = document.getElementsByClassName('checkbox-item');
+let editButton = document.getElementById('editButton');
 
 checkItAll.addEventListener('change', function () {
-    inputs.forEach(function (input) {
-        input.checked = checkItAll.checked;
-    });
+    for (let i = 0; i < inputs.length; i++){
+        inputs[i].checked = checkItAll.checked;
+    }
 });
 
 editButton.addEventListener('click', function (event) {
     let checked = 0;
-    inputs.forEach(i => {
-        if (i.checked)
+    for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i].checked)
             checked++;
-    });
+    }
     if (checked > 1) {
         event.preventDefault();
         event.stopPropagation();

@@ -1,5 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿
 
 a.navbar-brand {
     white-space: normal;
@@ -7,12 +6,18 @@ a.navbar-brand {
     word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
+
 a {
     color: #0366d6;
+
 }
 
-
+h1 {
+    font-family: 'Coda Caption', sans-serif;
+    font-weight: 800;
+    font-size: 58px;
+    color:deepskyblue;
+}
 
 .btn-primary {
     color: #fff;
@@ -20,8 +25,6 @@ a {
     border-color: #1861ac;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
     font-size: 14px;
 }
@@ -29,6 +32,9 @@ html {
 @media (min-width: 768px) {
     html {
         font-size: 16px;
+    }
+    h1{
+        font-size:72px;
     }
 }
 
@@ -49,15 +55,13 @@ button.accept-policy {
     line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+
 html {
     position: relative;
     min-height: 100%;
 }
 
 body {
-    /* Margin bottom by footer height */
     margin-bottom: 60px;
 }
 
@@ -66,7 +70,7 @@ body {
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    line-height: 60px; /* Vertically center the text there */
+    line-height: 60px; 
 }
 
 .menu-link {
@@ -75,10 +79,15 @@ body {
 }
 
 .tags{
-    border-radius:15px;
-    background-color:aqua;
+    border-radius:10px;
     border:0px;
 }
+
+.list-element darkmode--activated {
+    background: red;
+}
+
+
 
 .tags-look .tagify__dropdown__item {
     display: inline-block;
@@ -101,3 +110,57 @@ body {
     border-color: gold;
 }
 
+.img {
+    position: relative;
+    text-align: center;
+}
+
+/* Centered text */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.description {
+    font-size: larger;
+    color: deepskyblue;
+}
+
+.field{
+    color:red;
+}
+
+#dark-toggle{
+    position:relative;
+    width:40px;
+    height:20px;
+    -webkit-appearance:none;
+    background:#c6c6c6;
+    outline:none;
+    border-radius:10px;
+    box-shadow:inset 0 0 2.5px rgba(0, 0, 0, .2);
+    transition:.5s;    
+}
+
+#dark-toggle:checked{
+    background: #03a9f4;
+}
+
+    #dark-toggle:before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        top: 0;
+        left: 0;
+        background: white;
+        transform: scale(1.1);
+        box-shadow: 1px 2.5px rgba(0, 0, 0, .2);
+        transition: .5s;
+    }
+    #dark-toggle:checked:before {
+        left:20px;
+    }

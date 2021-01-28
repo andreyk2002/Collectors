@@ -11,46 +11,47 @@
     string name = SharedLocalizer["Name"].Value;
     string tags = SharedLocalizer["Tags"].Value;
 }
+<div id="container">
+    <div class="card-columns">
+        @{
+            foreach (var element in Model)
+            {
 
-<div class="card-columns">
-    @{
-        foreach (var element in Model)
-        {
-
-            <div class="card m-4 bg-info" style="width: 20rem;">
-                <div class="card-body">
-                    <h5 class="card-title">@Html.ActionLink(element.Name, "Index", "Item", new { id = element.Id }, null)</h5>
-                    <p class="card-text">@element.Tags</p>
+                <div class="card m-4 bg-info" style="width: 20rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.ActionLink(element.Name, "Index", "Item", new { id = element.Id }, null)</h5>
+                        <p class="card-text">@element.Tags</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <form asp-action="Like">
+                                    <input name="itemId" value="@element.Id" type="hidden" />
+                                    <input name="searchStr" value="@ViewBag.searchString" type="hidden" />
+                                    <button style="border-radius:50%" class="like"><img src="~/bootstrap-icons/icons/heart.svg" /></button>
+                                </form>
+                            }
+                            <span class="likesCount">@element.Likes</span>
+                        </li>
+                        @{
+                            manager = new FieldManager(element);
+                        }
+                        @for (int i = 0; i < 15; i++)
+                        {
+                            string fieldVal = manager.GetFieldByIndex(i);
+                            if (!string.IsNullOrEmpty(fieldVal) && fieldVal != "0")
+                            {
+                                <li class="list-group-item">
+                                    @Html.Raw(fieldVal)
+                                </li>
+                            }
+                        }
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <form asp-action="Like">
-                                <input name="itemId" value="@element.Id" type="hidden" />
-                                <input name="searchStr" value="@ViewBag.searchString" type="hidden" />
-                                <button style="border-radius:50%" class="like"><img src="~/bootstrap-icons/icons/heart.svg" /></button>
-                            </form>
-                        }
-                        <span class="likesCount">@element.Likes</span>
-                    </li>
-                    @{
-                        manager = new FieldManager(element);
-                    }
-                    @for (int i = 0; i < 15; i++)
-                    {
-                        string fieldVal = manager.GetFieldByIndex(i);
-                        if (!string.IsNullOrEmpty(fieldVal) && fieldVal != "0")
-                        {
-                            <li class="list-group-item">
-                                @Html.Raw(fieldVal)
-                            </li>
-                        }
-                    }
-                </ul>
-            </div>
 
 
+            }
         }
-    }
+    </div>
 </div>

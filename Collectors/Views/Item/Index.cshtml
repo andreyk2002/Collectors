@@ -1,21 +1,23 @@
 ﻿@using System.Web;
-<h2>Discussion about item</h2>
-<div id="inputForm">
-    <input type="text" id="message" />
-    <input type="button" id="sendBtn" value="Sent" />
-    <input id="userName" type="hidden"
-           value="@User.Identity.Name" />
-    <input id="itemId" type="hidden" value="@Model.ItemId" />
-</div>
-<div id="chatroom">
-    @{
-        foreach (var c in Model.Comments)
-        {
-            <b>@c.UserName :</b>
-            <p>@c.Content</p>
+<div class="container">
+    <h2>Discussion about item</h2>
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Sent" />
+        <input id="userName" type="hidden"
+               value="@User.Identity.Name" />
+        <input id="itemId" type="hidden" value="@Model.ItemId" />
+    </div>
+    <div id="chatroom">
+        @{
+            foreach (var c in Model.Comments)
+            {
+                <b>@c.UserName :</b>
+                <p>@c.Content</p>
+            }
         }
+    </div>
+    @section Scripts{
+        <script src="~/js/commentChat.js"></script>
     }
-</div>
-@section Scripts{
-    <script src="~/js/commentChat.js"></script>
-}
+    </div>

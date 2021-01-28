@@ -32,9 +32,9 @@ namespace Collectors.Controllers
         public async Task<IActionResult> IndexAsync(int id)
         {
             ItemsListViewModel model;
-            Collection c = dbManager.GetCollectionById(id);
             if (RequireSort(id))
                 return View(GetSortedItems());
+            Collection c = dbManager.GetCollectionById(id);
             model = modelHelper.GetItemsListModel(c);
             if (! await CheckUserAsync(c))
                 return Forbid();

@@ -13,7 +13,7 @@ namespace Collectors.Classes
     [Authorize(Roles = "admin,user")]
     public class ModelHelper
     {
-        public const int DefualtCollectionsCount = 2;
+        public const int DefualtCollectionsCount = 3;
 
         public const int DefaultItemsCount = 5;
         public DbManager DbManager { get; set; }

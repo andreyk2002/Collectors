@@ -6,44 +6,48 @@
     int i = 0;
 }
 @model CheckboxListModel;
-<div>
-    @await Html.PartialAsync("_SelectLanguagePartial")
-</div>
-<h2> @Localizer["All users"]</h2>
-<form asp-controller="Home" asp-anti-forgery="true">
-    <div class="toolbar mb-3" role="toolbar">
-        <div class="btn-group mr-2" role="group">
-            <button type="submit" class="btn btn-secondary" asp-action="Lock">@Localizer["Lock"]</button>
-            <button type="submit" class="btn btn-secondary" asp-action="Unlock">@Localizer["Unlock"]</button>
-            <button type="submit" class="btn btn-secondary" asp-action="Delete">@Localizer["Delete"]</button>
-            <button type="submit" class="btn btn-secondary" asp-action="MakeAdmin">@Localizer["Make administrator"]</button>
+    <div class="container">
+        <div>
+            @await Html.PartialAsync("_SelectLanguagePartial")
         </div>
+        <h2> @Localizer["All users"]</h2>
+        <form asp-controller="Home" asp-anti-forgery="true">
+            <div class="toolbar mb-3" role="toolbar">
+                <div class="btn-group mr-2" role="group">
+                    <button type="submit" class="btn btn-secondary" asp-action="Lock">@Localizer["Lock"]</button>
+                    <button type="submit" class="btn btn-secondary" asp-action="Unlock">@Localizer["Unlock"]</button>
+                    <button type="submit" class="btn btn-secondary" asp-action="Delete">@Localizer["Delete"]</button>
+                    <button type="submit" class="btn btn-secondary" asp-action="MakeAdmin">@Localizer["Make administrator"]</button>
+                </div>
+            </div>
+
+
+            <table class="table table-striped table-bordered" width="80%">
+                <thead>
+                    <tr>
+                        <th><input id="selectAll" value="1" type="checkbox"> @Localizer["Select all"]</th>
+                        <th>@Localizer["Name"]</th>
+                        <th>@Localizer["Email"]</th>
+                        <th>@Localizer["Blocked"]</th>
+                        <th>@Localizer["Role"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in ViewBag.Users)
+                    {
+                        <tr>
+                            <td><input class="checkbox-item" type="checkbox" asp-for="Selected[i]" /></td>
+                            <td>@e.User.UserName</td>
+                            <td>@e.User.Email</td>
+                            <td>@e.IsBlocked</td>
+                            <td>@e.Role</td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </form>
     </div>
-
-
-    <table id="data-table" class="table table-striped table-bordered" width="80%">
-        <thead>
-            <tr>
-                <th><input name="select_all" value="1" type="checkbox"> @Localizer["Select all"]</th>
-                <th>@Localizer["Name"]</th>
-                <th>@Localizer["Email"]</th>
-                <th>@Localizer["Blocked"]</th>
-                <th>@Localizer["Role"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var e in ViewBag.Users)
-            {
-                <tr>
-                    <td><input type="checkbox" asp-for="Selected[i]" /></td>
-                    <td>@e.User.UserName</td>
-                    <td>@e.User.Email</td>
-                    <td>@e.IsBlocked</td>
-                    <td>@e.Role</td>
-                </tr>
-                i++;
-            }
-        </tbody>
-    </table>
-</form>
-<script src="~/js/checkboxes.js" asp-append-version="true"></script>
+@section scripts{ 
+    <script src="~/js/checkboxes.js" asp-append-version="true"></script>
+    }

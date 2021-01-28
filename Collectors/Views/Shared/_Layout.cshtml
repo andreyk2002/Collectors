@@ -6,6 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Collectors</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Coda+Caption:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/tagify.css" />
     <link rel="stylesheet" href="~/css/site.css" />
@@ -23,17 +25,20 @@
                 <ul class="navbar-nav mr-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link text-light font-weight-bolder" asp-area="" asp-controller="Home" 
+                        <a class="nav-link text-light font-weight-bolder" asp-area="" asp-controller="Home"
                            asp-action="Index">@Localizer["Home"]</a>
                     </li>
                     <li>
-                        <a class="nav-link text-light font-weight-bolder" asp-area="" asp-controller="Home" 
+                        <a class="nav-link text-light font-weight-bolder" asp-area="" asp-controller="Home"
                            asp-action="Privacy">@Localizer["Privacy"]</a>
+                    </li>
+                    <li>
+                        <partial name="_SelectLanguagePartial" />
                     </li>
                 </ul>
                 <partial name="_LoginPartial" />
                 <form class="form-inline my-2 my-lg-0">
-                    <input id ="searchInput" name="searchString" class="form-control mr-sm-2" type="search" placeholder=@Localizer["Search"]
+                    <input id="searchInput" name="searchString" class="form-control mr-sm-2" type="search" placeholder=@Localizer["Search"]
                            aria-label=@Localizer["Search"]>
                     <button asp-controller="Home" asp-action="Search" class="btn btn-success my-2 my-sm-0" type="submit">
                         <img src="~/bootstrap-icons/icons/search.svg" />
@@ -42,23 +47,35 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main" class="w-100">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-3">
         <div class="container">
             &copy; 2020 - Collectors - <a asp-area="" asp-controller="Home" asp-action="Privacy">
                 @Localizer["Privacy"]
             </a>
+            <label class="dark-toggle ml-4">
+                <input id="dark-toggle" class="dark-toggle-checkbox" type="checkbox" onclick="darkmode.toggle();">
+                <span class="dark-toggle-label">Dark Mode</span>
+            </label>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/Darkmode.js/darkmode-js.min.js"></script>
-    <script src="~/js/enableDarkMode.js"></script>
+    <script>
+        const darkmode = new Darkmode();
+        if (darkmode.isActivated()) {
+            document.getElementById("dark-toggle").checked = true;
+        }
+        else {
+            document.getElementById("dark-toggle").checked = false;
+        }
+    </script>
     <script src="~/js/tagify/tagify.min.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
     @RenderSection("Scripts", required: false)

@@ -155,7 +155,7 @@ namespace Collectors.Classes
             List<CollectionItem> results = SearchInItems(searchString).ToList();
             results.AddRange(SearchInCollections(searchString));
             results.AddRange(SearchInComments(searchString));
-            return results.ToList();
+            return results.Distinct().ToList();
         }
 
         private IQueryable<CollectionItem> SearchInCollections(string searchString)
