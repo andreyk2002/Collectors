@@ -8,10 +8,9 @@
 @model CollectionEditModel;
 
 <link rel="stylesheet" src="~/css/createCollection.css" />
-<div class="container">
-    <div class="container contact-form">
+    <div class="container contact-form p-5 mb-5">
         <form method="post" enctype="multipart/form-data">
-            <h3 class="text-center">@Localizer["Editing your collection"]</h3>
+            <h1 class="text-center">@Localizer["Editing your collection"]</h1>
             <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
             <div class="row">
                 <div class="col-md-6">
@@ -37,8 +36,8 @@
                 </div>
 
             </div>
-            <div class="form-group mb-5 mt-5">
-                <label>@Localizer["Change/Add the image of collection"]</label>
+            <div class="form-group mt-5">
+                <h5>@Localizer["Change/Add the image of collection"]</h5>
                 <input name="Image" type="file" class="form-control m-2" />
                 <button class="btn btn-primary" type="submit">@Localizer["Finish"]</button>
                 <button class="btn btn-primary" name="ShouldDeleteImage" value="true" type="submit">
@@ -46,5 +45,4 @@
                 </button>
             </div>
         </form>
-    </div>
     </div>

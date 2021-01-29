@@ -13,8 +13,8 @@
         <textarea class="form-control" rows="5" cols="60" asp-for="@Model.ShortDescription"
                   placeholder="@Localizer["Short description"]"></textarea>
         <br />
+        <h5>@Localizer["Collection theme"]:</h5><br />
         <div id="collection theme" class="mb-5">
-            <label class="text-center">@Localizer["Collection Theme"]:</label><br />
             @{
                 foreach (var e in themes)
                 {
@@ -25,7 +25,7 @@
             }
         </div>
         <h3>@Localizer["Add additional fields"]</h3>
-        <div class="m-2">
+        <div class="m-4">
             @{
                 for (int i = 0; i < 15; i += 3)
                 {
@@ -41,15 +41,15 @@
                 }
             }
         </div>
-        <div class="m-3">
-            <label>@Localizer["Drop your image here"]р</label>
+        <h5>@Localizer["Drop your image here"]</h5>
+        <div class="mb-3">
             <input name="Image" type="file" class="form-control" />
             @*<div id="uploadBlock" class="d-flex align-content-center justify-content-center"
-                     style="height:400px; width:400px; border:1px solid black">
-                    @Localizer["Drop your image here"]
-                </div>
-                <br />
-                <img id="imageUpload" src="~/bootstrap-icons/icons/eye-fill.svg" class="d-none" />*@
+                 style="height:400px; width:400px; border:1px solid black">
+                @Localizer["Drop your image here"]
+            </div>
+            <br />
+            <img id="imageUpload" src="~/bootstrap-icons/icons/eye-fill.svg" class="d-none" />*@
         </div>
         <button id="createButton" class="btn btn-primary mb-5" type="submit">@Localizer["Create new collection"]</button>
     </form>

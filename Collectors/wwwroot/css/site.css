@@ -37,8 +37,8 @@ html {
     html {
         font-size: 16px;
     }
-    h1{
-        font-size:72px;
+    .big-header{
+        font-size:82px;
     }
 }
 

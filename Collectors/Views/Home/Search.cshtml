@@ -33,13 +33,16 @@
                             }
                             <span class="likesCount">@element.Likes</span>
                         </li>
-                      
-                        @foreach (string fieldVal in element.AdditionalFieldsValues)
+
+                        @for (int i = 0; i < element.AdditionalFieldsNames.Count; i++)
                         {
-                            if (!string.IsNullOrEmpty(fieldVal))
+                            string fieldName = element.AdditionalFieldsNames[i];
+                            string value = element.AdditionalFieldsValues[i];
+                            if (!string.IsNullOrEmpty(value))
                             {
                                 <li class="list-group-item field">
-                                    @Html.Raw(fieldVal)
+                                    @fieldName:
+                                    @Html.Raw(value)
                                 </li>
                             }
                         }

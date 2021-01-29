@@ -1,9 +1,13 @@
 ﻿@using System.Web;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer;
 <div class="container">
-    <h2>Discussion about item</h2>
+    <h2>@SharedLocalizer["Discussion about item"]</h2>
     <div id="inputForm">
-        <input class="form-control" type="text" id="message" />
-        <input class="form-control-sm m-2" type="button" id="sendBtn" value="Sent" />
+        <input class="form-control" type="text" id="message"
+               placeholder="@SharedLocalizer["Write your comment"]..." />
+        <input class="form-control-sm m-2 btn-success darkmode-ignore"
+               type="button" id="sendBtn" value="@SharedLocalizer["Sent"]" />
         <input id="userName" type="hidden"
                value="@User.Identity.Name" />
         <input id="itemId" type="hidden" value="@Model.ItemId" />
@@ -19,7 +23,7 @@
             }
         }
     </div>
+</div>
     @section Scripts{
         <script src="~/js/commentChat.js"></script>
     }
-</div>
