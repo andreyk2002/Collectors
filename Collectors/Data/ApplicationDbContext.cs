@@ -13,11 +13,22 @@ namespace Collectors.Data
         public DbSet<Collection> Collections { get; set; }
         public DbSet<CollectionItem> Items { get; set; }
 
+        public DbSet<Like> Likes { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Like>()
+                .HasKey(like => new { like.UserId, like.ItemId });
+        }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();
         }
+
+      
     }
 }

@@ -4,6 +4,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Markdig;
 @inject UserManager<IdentityUser> UserManager;
+@inject SignInManager<IdentityUser> SignInManager
 @inject IViewLocalizer Localizer;
 @{
     ViewData["Title"] = "Home Page";
@@ -83,6 +84,19 @@
                             <p class="card-text">@item.Tags</p>
                         </div>
                         <ul class="list-group list-group-flush">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li class="list-group-item field">
+                                    <form asp-action="Like">
+                                        <input name="redirectAction" value="Index" type="hidden" />
+                                        <input name="itemId" value="@item.ItemId" type="hidden" />
+                                        <input name="searchStr" value="@ViewBag.searchString" type="hidden" />
+                                        <button style="border-radius:50%" class="like"><img src="~/bootstrap-icons/icons/heart.svg" /></button>
+                                    </form>
+                                    <span class="likesCount">@item.Likes</span>
+                                </li>
+
+                            }
                             @for (int i = 0; i < item.AdditionalFieldsNames.Count; i++)
                             {
                                 string fieldName = item.AdditionalFieldsNames[i];

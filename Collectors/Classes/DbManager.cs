@@ -72,6 +72,19 @@ namespace Collectors.Classes
             return GetItemsByCollectionId(id).OrderBy(i => i.Id).ToList();
         }
 
+        public void TryToLike(string userId, long itemId)
+        {
+            if (NotLiked(userId, itemId))
+            {
+                Db.Likes.Add(new Like { ItemId = itemId, UserId = userId });
+            }
+        }
+
+        public bool NotLiked(string userId, long itemId)
+        {
+            var like = Db.Likes.Where(like => like.UserId == userId && like.ItemId == itemId);
+            return like.Count() == 0;
+        }
         public List<Collection> GetBiggestCollections(int defualtCollectionsCount)
         {
             var collectionsId = Db.Items.GroupBy(i => i.CollectionId)
@@ -139,6 +152,13 @@ namespace Collectors.Classes
                 (c, i) => new ItemCollection { Item = i, Collection = c })
                 .OrderByDescending(c => c.Item.Id);
         }
+
+        public int GetLikesForItem(CollectionItem item)
+        {
+            var likes = Db.Likes.Where(like => like.ItemId == item.Id);
+            return likes.Count();
+        }
+
         public void Save()
         {
             Db.SaveChanges();

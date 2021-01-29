@@ -22,18 +22,19 @@
                         <p class="card-text">@element.Tags</p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item field">
-                            @if (SignInManager.IsSignedIn(User))
-                            {
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="list-group-item field">
                                 <form asp-action="Like">
+                                    <input name="redirectAction" value="Search" type="hidden" />
                                     <input name="itemId" value="@element.ItemId" type="hidden" />
                                     <input name="searchStr" value="@ViewBag.searchString" type="hidden" />
                                     <button style="border-radius:50%" class="like"><img src="~/bootstrap-icons/icons/heart.svg" /></button>
                                 </form>
-                            }
-                            <span class="likesCount">@element.Likes</span>
-                        </li>
+                                <span class="likesCount">@element.Likes</span>
+                            </li>
 
+                        }
                         @for (int i = 0; i < element.AdditionalFieldsNames.Count; i++)
                         {
                             string fieldName = element.AdditionalFieldsNames[i];

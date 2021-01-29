@@ -74,17 +74,18 @@ namespace Collectors.Classes
             List<ItemModel> model = new List<ItemModel>();
             foreach (var element in result)
             {
-                model.Add(GetItemModel(element.Collection, element.Item));
+                int likesForItem = DbManager.GetLikesForItem(element.Item);
+                model.Add(GetItemModel(element.Collection, element.Item, likesForItem));
             }
             return model;
         }
 
 
-        private ItemModel GetItemModel(Collection c, CollectionItem i)
+        private ItemModel GetItemModel(Collection c, CollectionItem i, int likes)
         {
             ItemModel model = new ItemModel
             {
-                Likes = i.Likes,
+                Likes = likes,
                 ItemId = i.Id,
                 Name = i.Name,
                 Tags = i.Tags,

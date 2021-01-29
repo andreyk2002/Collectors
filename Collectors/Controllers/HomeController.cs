@@ -55,12 +55,17 @@ namespace Collectors.Controllers
             return View(results.ToList());
         }
 
-        public IActionResult Like(string searchStr, int itemId)
+        public async Task<IActionResult> LikeAsync(string searchStr, int itemId, string redirectAction)
         {
             CollectionItem item = _dbManager.GetItem(itemId);
-            item.Likes++;
+            IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            _dbManager.TryToLike(currentUser.Id, item.Id);
             _dbManager.Save();
-            return Redirect("Search?searchString=" + searchStr);
+            if (redirectAction == "Search")
+            {
+                return Redirect("Search?searchString=" + searchStr);
+            }
+            return Redirect(redirectAction);
         }
 
         public IActionResult SearchTags(string tag)
