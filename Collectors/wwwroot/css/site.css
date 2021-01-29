@@ -12,7 +12,11 @@ a {
 
 }
 
-h1 {
+button{
+    border-radius:5px;
+}
+
+.big-header {
     font-family: 'Coda Caption', sans-serif;
     font-weight: 800;
     font-size: 58px;
@@ -128,8 +132,9 @@ body {
     color: deepskyblue;
 }
 
-.field{
-    color:red;
+.darkmode--activated .field{
+    background-color:black;
+    color:white;
 }
 
 #dark-toggle{
@@ -164,3 +169,11 @@ body {
     #dark-toggle:checked:before {
         left:20px;
     }
+
+.message {
+    background-color: #b6ff00;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 25px;
+    font-family: 'Roboto Mono', monospace;
+}

@@ -4,6 +4,7 @@ using Collectors.Data;
 using Collectors.Data.Classes;
 using Collectors.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,9 @@ namespace Collectors.Classes
     public class ModelHelper
     {
         public const int DefualtCollectionsCount = 3;
-
         public const int DefaultItemsCount = 5;
         public DbManager DbManager { get; set; }
-
+        public UserManager<IdentityUser> UserManager { get; set; }
 
         public ItemModel GetItemModel(ItemsListViewModel il)
         {
@@ -44,7 +44,6 @@ namespace Collectors.Classes
             return model;
         }
 
-    
 
         public StartModel MakeStartModel()
         {
@@ -55,14 +54,23 @@ namespace Collectors.Classes
             return model;
         }
 
+        internal List<ItemModel> GetItemsByString(string searchString)
+        {
+            var itemsWithCollections = DbManager.GetItemsWithCollections();
+            var result = DbManager.FindItems(searchString, itemsWithCollections);
+            return GetItemModels(result);
+        }
+
         private List<ItemModel> GetLatestItems(int itemsCount)
         {
-            ApplicationDbContext Db = DbManager.Db;
+            var result = DbManager.GetItemsWithCollections()
+                .Take(itemsCount)
+                .ToList();
+            return GetItemModels(result);
+        }
 
-            var result = Db.Collections.Join(Db.Items, c => c.Id, i => i.CollectionId,
-                (c, i) => new { Item = i, Collection = c })
-                .OrderByDescending(c => c.Item.Id)
-                .Take(itemsCount);
+        private List<ItemModel> GetItemModels(List<ItemCollection> result)
+        {
             List<ItemModel> model = new List<ItemModel>();
             foreach (var element in result)
             {
@@ -71,10 +79,12 @@ namespace Collectors.Classes
             return model;
         }
 
+
         private ItemModel GetItemModel(Collection c, CollectionItem i)
         {
             ItemModel model = new ItemModel
             {
+                Likes = i.Likes,
                 ItemId = i.Id,
                 Name = i.Name,
                 Tags = i.Tags,

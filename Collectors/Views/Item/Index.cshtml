@@ -2,22 +2,24 @@
 <div class="container">
     <h2>Discussion about item</h2>
     <div id="inputForm">
-        <input type="text" id="message" />
-        <input type="button" id="sendBtn" value="Sent" />
+        <input class="form-control" type="text" id="message" />
+        <input class="form-control-sm m-2" type="button" id="sendBtn" value="Sent" />
         <input id="userName" type="hidden"
                value="@User.Identity.Name" />
         <input id="itemId" type="hidden" value="@Model.ItemId" />
     </div>
-    <div id="chatroom">
+    <div id="chatroom" class="m-4 p-2">
         @{
             foreach (var c in Model.Comments)
             {
-                <b>@c.UserName :</b>
-                <p>@c.Content</p>
+                <div class="message">
+                    <b>@c.UserName :</b>
+                    <p>@c.Content</p>
+                </div>
             }
         }
     </div>
     @section Scripts{
         <script src="~/js/commentChat.js"></script>
     }
-    </div>
+</div>

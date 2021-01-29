@@ -36,13 +36,12 @@ namespace Collectors.Controllers
                 return View(GetSortedItems());
             Collection c = dbManager.GetCollectionById(id);
             model = modelHelper.GetItemsListModel(c);
-            if (! await CheckUserAsync(c))
-                return Forbid();
+            model.ViewedByCreator = await CheckAcess(model);
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Index(ItemModel ia)
+        public async Task<IActionResult> IndexAsync(ItemModel ia)
         {
             CollectionItem item = new CollectionItem
             { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
@@ -50,7 +49,9 @@ namespace Collectors.Controllers
             dbManager.UpdateTags(ia.Tags);
             dbManager.AddItem(item);
             Collection c = dbManager.GetCollectionById(ia.CollectionId);
-            return View(modelHelper.GetItemsListModel(c));
+            var model = modelHelper.GetItemsListModel(c);
+            model.ViewedByCreator = await CheckAcess(model);
+            return View(model);
         }   
 
         public ItemsListViewModel GetSortedItems()
@@ -59,32 +60,38 @@ namespace Collectors.Controllers
             return items ?? new ItemsListViewModel();
         }
 
-        public IActionResult Add(ItemsListViewModel il)
+        public async Task<IActionResult> AddAsync(ItemsListViewModel il)
         {
+            if (!await CheckAcess(il))
+                return Forbid();
             ItemModel model = modelHelper.GetItemModel(il);
             ViewBag.Tags = dbManager.GetTagsFromServer();
             return View(model);
         }
 
-        public IActionResult Delete(ItemsListViewModel ia)
+        public async Task<IActionResult> DeleteAsync(ItemsListViewModel model)
         {
-            var items = dbManager.GetItemsInCollection(ia.CollectionId);
+            if (!await CheckAcess(model))
+                return Forbid();
+            var items = dbManager.GetItemsInCollection(model.CollectionId);
             for (int i = 0; i < items.Count; i++)
-                if (ia.Selected[i])
+                if (model.Selected[i])
                     dbManager.RemoveItem(items[i]);
-            return Redirect("Index?id=" + ia.CollectionId);
+            return Redirect("Index?id=" + model.CollectionId);
         }
-        public IActionResult Edit(ItemsListViewModel ia)
+        public async Task<IActionResult> EditAsync(ItemsListViewModel model)
         {
+            if (!await CheckAcess(model))
+                return Forbid();
             ViewBag.Tags = dbManager.GetTagsFromServer();
-            var items = dbManager.GetItemsInCollection(ia.CollectionId);
+            var items = dbManager.GetItemsInCollection(model.CollectionId);
             for (int i = 0; i < items.Count; i++)
-                if (ia.Selected[i])
+                if (model.Selected[i])
                 {
                     ViewBag.Item = items[i];
-                    return View(modelHelper.GetItemModel(ia));
+                    return View(modelHelper.GetItemModel(model));
                 }
-            return Redirect("Index?id=" + ia.CollectionId);
+            return Redirect("Index?id=" + model.CollectionId);
         }
 
         [HttpPost]
@@ -136,8 +143,9 @@ namespace Collectors.Controllers
             TempDataExtensions.Put(TempData, "Items", model);
         }
 
-        public async Task<bool> CheckUserAsync(Collection c)
+        private async Task<bool> CheckAcess(ItemsListViewModel ia)
         {
+            Collection c = dbManager.GetCollectionById(ia.CollectionId);
             IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
             return currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString());
         }

@@ -16,6 +16,8 @@ namespace Collectors.Models
         public string Tags { get; set; }
         public long ItemId { get; set; }
         public int CollectionId { get; set; }
+
+        public int Likes { get; set; }
         public List<string> AdditionalFieldsNames { get; set; }
         public List<string> AdditionalFieldsValues { get; set; }
         public List<int> AdditionalFieldsIndexes { get; set; }

@@ -4,10 +4,9 @@
 @using Microsoft.AspNetCore.Identity
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 @inject SignInManager<IdentityUser> SignInManager
-@model List<CollectionItem>;
+@model List<ItemModel>;
 
 @{
-    IFieldManager manager;
     string name = SharedLocalizer["Name"].Value;
     string tags = SharedLocalizer["Tags"].Value;
 }
@@ -19,38 +18,33 @@
 
                 <div class="card m-4 bg-info" style="width: 20rem;">
                     <div class="card-body">
-                        <h5 class="card-title">@Html.ActionLink(element.Name, "Index", "Item", new { id = element.Id }, null)</h5>
+                        <h5 class="card-title">@Html.ActionLink(element.Name, "Index", "Item", new { id = element.ItemId }, null)</h5>
                         <p class="card-text">@element.Tags</p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
+                        <li class="list-group-item field">
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <form asp-action="Like">
-                                    <input name="itemId" value="@element.Id" type="hidden" />
+                                    <input name="itemId" value="@element.ItemId" type="hidden" />
                                     <input name="searchStr" value="@ViewBag.searchString" type="hidden" />
                                     <button style="border-radius:50%" class="like"><img src="~/bootstrap-icons/icons/heart.svg" /></button>
                                 </form>
                             }
                             <span class="likesCount">@element.Likes</span>
                         </li>
-                        @{
-                            manager = new FieldManager(element);
-                        }
-                        @for (int i = 0; i < 15; i++)
+                      
+                        @foreach (string fieldVal in element.AdditionalFieldsValues)
                         {
-                            string fieldVal = manager.GetFieldByIndex(i);
-                            if (!string.IsNullOrEmpty(fieldVal) && fieldVal != "0")
+                            if (!string.IsNullOrEmpty(fieldVal))
                             {
-                                <li class="list-group-item">
+                                <li class="list-group-item field">
                                     @Html.Raw(fieldVal)
                                 </li>
                             }
                         }
                     </ul>
                 </div>
-
-
             }
         }
     </div>

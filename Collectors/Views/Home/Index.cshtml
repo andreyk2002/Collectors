@@ -18,30 +18,36 @@
                 {
                     var collection = Model.BiggestCollections[i];
                     string activeItemString = (i == 0) ? "active" : "";
-                        <div class="carousel-item @activeItemString">
-                            @if (collection.Image != null)
-                            {
-                                <img class="center-block w-100 h-auto" src="data:image/jpeg;base64,
+                    <div class="carousel-item @activeItemString">
+                        @if (collection.Image != null)
+                        {
+                            <img class="center-block w-100 h-auto" src="data:image/jpeg;base64,
                                  @(Convert.ToBase64String(collection.Image))" alt="">
-                            }
-                            else
-                            {
-                                <img class="center-block w-100 h-auto" src="~/img/ImageNotSet.png" alt="">
-                            }
-                            <div class="centered">
+                        }
+                        else
+                        {
+                            <img class="center-block w-100 h-auto" src="~/img/blank.jfif" alt="">
+                        }
+                        <div class="centered">
+                            <h1 class="big-header">Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(collection.ThemeId)</h1>
+                            <div class="description">@Html.Raw(Markdown.ToHtml(collection.ShortDescription))</div>
+                            <form>
+                                <input name="id" type="hidden" value="@collection.Id" />
+                                <button class="btn-info" asp-action="Index" asp-controller="Items">
+                                    @Localizer["View items"]
+                                </button>
                                 @if (ViewBag.Role != null && ViewBag.Role[0] == "admin")
                                 {
-                                    <form>
-                                        <button class="btn-success" asp-action="Index" asp-controller="Admin">
-                                        @Localizer["ManageUsers"]
-                                        </button>
-                                    </form>
-                                }
 
-                                <h1>Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(collection.ThemeId)</h1>
-                                <div class="description">@Html.Raw(Markdown.ToHtml(collection.ShortDescription))</div>
-                            </div>
+
+                                    <button class="btn-success" asp-action="Index" asp-controller="Admin">
+                                        @Localizer["ManageUsers"]
+                                    </button>
+
+                                }
+                            </form>
                         </div>
+                    </div>
                 }
             }
             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

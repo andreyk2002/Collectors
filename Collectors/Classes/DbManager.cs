@@ -1,5 +1,6 @@
 ﻿using Collectors.Data;
 using Collectors.Data.Classes;
+using Collectors.Models;
 using Collectors.Models.Comments;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Collectors.Classes
 
         public CommentModel GetCommentsById(long id)
         {
-            var Comments = Db.Comments.Where(i => i.ItemId == id).ToList();
+            var Comments = Db.Comments.Where(i => i.ItemId == id).OrderByDescending(c => c.Id).ToList();
             CommentModel m = new CommentModel { ItemId = id, Comments = Comments };
             return m;
         }
@@ -59,11 +60,11 @@ namespace Collectors.Classes
             return GetItemsByCollectionId(id).ToList();
         }
 
-        public List<CollectionItem> FindAll(string searchString)
+        public List<ItemCollection> FindItems(string searchString, IQueryable<ItemCollection>model)
         {
             if (string.IsNullOrEmpty(searchString))
-                return new List<CollectionItem>();
-            var result = MakeSearchQuery(searchString);
+                return new List<ItemCollection>();
+            var result = MakeSearchQuery(searchString,model);
             return result;
         }
         public List<CollectionItem> GetSortedById(int id)
@@ -132,10 +133,17 @@ namespace Collectors.Classes
             Save();
         }
 
+        public IQueryable<ItemCollection> GetItemsWithCollections()
+        {
+            return Db.Collections.Join(Db.Items, c => c.Id, i => i.CollectionId,
+                (c, i) => new ItemCollection { Item = i, Collection = c })
+                .OrderByDescending(c => c.Item.Id);
+        }
         public void Save()
         {
             Db.SaveChanges();
         }
+
         private static int CompareBySelectedField(int fieldIndex, CollectionItem e1, CollectionItem e2)
         {
             var f1 = new FieldManager(e1).GetFieldByIndex(fieldIndex);
@@ -150,43 +158,33 @@ namespace Collectors.Classes
         {
             return Db.Items.Where(i => i.CollectionId == id);
         }
-        private List<CollectionItem> MakeSearchQuery(string searchString)
+        private List<ItemCollection> MakeSearchQuery(string searchString, IQueryable<ItemCollection> model)
         {
-            List<CollectionItem> results = SearchInItems(searchString).ToList();
-            results.AddRange(SearchInCollections(searchString));
-            results.AddRange(SearchInComments(searchString));
+            List<ItemCollection> results = SearchInItems(searchString, model).ToList();
+            results.AddRange(SearchInComments(searchString,model));
             return results.Distinct().ToList();
         }
 
-        private IQueryable<CollectionItem> SearchInCollections(string searchString)
+       
+        private IQueryable<ItemCollection> SearchInComments(string searchString, IQueryable<ItemCollection> model)
         {
-            var themes = Enum.GetValues(typeof(CollectionTheme));
-            var query = (from collections in Db.Collections
-                         join items in Db.Items
-                   on collections.Id equals items.CollectionId
-                         where collections.ShortDescription.Contains(searchString)
-                         select items);
-            return query;
-        }
-
-        private IQueryable<CollectionItem> SearchInComments(string searchString)
-        {
-            return from items in Db.Items
+            return from elements in model
                    join comments in Db.Comments
-                   on items.Id equals comments.ItemId
+                   on elements.Item.Id equals comments.ItemId
                    where comments.Content.Contains(searchString)
-                   select items;
+                   select elements;
         }
 
-        private IQueryable<CollectionItem> SearchInItems(string searchString)
+        private IQueryable<ItemCollection> SearchInItems(string searchString, IQueryable<ItemCollection> model)
         {
-            return (from items in Db.Items
-                    where items.Name.Contains(searchString) || items.Tags.Contains(searchString)
-                   || items.StringField1.Contains(searchString) || items.StringField2.Contains(searchString)
-                   || items.StringField3.Contains(searchString) || items.TextField1.Contains(searchString)
-                   || items.TextField2.Contains(searchString) || items.TextField3.Contains(searchString)
+            return (from items in model
+                    where items.Item.Name.Contains(searchString) || items.Item.Tags.Contains(searchString)
+                   || items.Item.StringField1.Contains(searchString) || items.Item.StringField2.Contains(searchString)
+                   || items.Item.StringField3.Contains(searchString) || items.Item.TextField1.Contains(searchString)
+                   || items.Item.TextField2.Contains(searchString) || items.Item.TextField3.Contains(searchString)
+                   || items.Collection.ShortDescription.Contains(searchString)
                     select items
-            );
+            ) ;
         }
 
     }

@@ -12,74 +12,77 @@
 }
 <div class="container">
     <form method="post">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">@Localizer["Manage items"]</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                @{
-                    <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
-                    for (int i = 0; i < Model.AdditionalFieldsIndexes.Count; i++)
-                    {
-                        <input asp-for="AdditionalFieldsIndexes[i]" value="@Model.AdditionalFieldsIndexes[i]" type="hidden" />
-                        <input asp-for="AdditionalFieldsNames[i]" value="@Model.AdditionalFieldsNames[i]" type="hidden" />
-                    }
-                }
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <button class="nav-item" id="editButton" asp-action="Edit" type="submit">
-                            <img src="~/bootstrap-icons/icons/pencil-fill.svg" />
-                            <span class="sr-only">(current)</span>
-                        </button>
-                    </li>
-                    <li class="nav-item active">
-                        <button class="nav-item" asp-action="Delete" type="submit">
-                            <img src="~/bootstrap-icons/icons/trash-fill.svg" />
-                            <span class="sr-only">(current)</span>
-                        </button>
-                    </li>
-                    <li class="nav-item active">
-                        <button class="nav-item" asp-action="Add" type="submit">
-                            <img src="~/bootstrap-icons/icons/plus.svg" />
-                            <span class="sr-only">(current)</span>
-                        </button>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @Localizer["Order by"]
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <button class="dropdown-item" asp-action="OrderById" type="submit">@SharedLocalizer["Id"]</button>
-                            <button class="dropdown-item" asp-action="OrderByName" type="submit">@SharedLocalizer["Name"]</button>
-                            <button class="dropdown-item" asp-action="OrderByTags" type="submit">@SharedLocalizer["Tags"]</button>
-                            <div class="dropdown-divider"></div>
-                            @{
-
-                                for (int i = 0; i < Model.AdditionalFieldsNames.Count; i++)
-                                {
-
-                                    <button class="dropdown-item additional-field" asp-action="OrderByFieldIndex" type="submit">
-                                        @Model.AdditionalFieldsNames[i]
-                                    </button>
-                                }
-                                <input type="hidden" id="fieldIndex" name="index" value="" />
-                            }
-
-                        </div>
-                    </li>
-                </ul>
-                <input class="form-control mr-sm-2" type="search" value="" name="searchString"
-                       placeholder="@Localizer["Search by name"]" aria-label="Search">
-                <button asp-action="SearchByName" class="btn btn-outline-dark my-3 my-sm-1" type="submit">
-                    <img src="~/bootstrap-icons/icons/search.svg" />
+        @if (Model.ViewedByCreator)
+        {
+            <nav class="navbar navbar-expand-lg navbar-light bg-success">
+                <a class="navbar-brand" href="#">@Localizer["Manage items"]</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-            </div>
-        </nav>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                    @{
+                        <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
+                        for (int i = 0; i < Model.AdditionalFieldsIndexes.Count; i++)
+                        {
+                            <input asp-for="AdditionalFieldsIndexes[i]" value="@Model.AdditionalFieldsIndexes[i]" type="hidden" />
+                            <input asp-for="AdditionalFieldsNames[i]" value="@Model.AdditionalFieldsNames[i]" type="hidden" />
+                        }
+                    }
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <button class="nav-item" id="editButton" asp-action="Edit" type="submit">
+                                <img src="~/bootstrap-icons/icons/pencil-fill.svg" />
+                                <span class="sr-only">(current)</span>
+                            </button>
+                        </li>
+                        <li class="nav-item active">
+                            <button class="nav-item" asp-action="Delete" type="submit">
+                                <img src="~/bootstrap-icons/icons/trash-fill.svg" />
+                                <span class="sr-only">(current)</span>
+                            </button>
+                        </li>
+                        <li class="nav-item active">
+                            <button class="nav-item" asp-action="Add" type="submit">
+                                <img src="~/bootstrap-icons/icons/plus.svg" />
+                                <span class="sr-only">(current)</span>
+                            </button>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @Localizer["Order by"]
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <button class="dropdown-item" asp-action="OrderById" type="submit">@SharedLocalizer["Id"]</button>
+                                <button class="dropdown-item" asp-action="OrderByName" type="submit">@SharedLocalizer["Name"]</button>
+                                <button class="dropdown-item" asp-action="OrderByTags" type="submit">@SharedLocalizer["Tags"]</button>
+                                <div class="dropdown-divider"></div>
+                                @{
+
+                                    for (int i = 0; i < Model.AdditionalFieldsNames.Count; i++)
+                                    {
+
+                                        <button class="dropdown-item additional-field" asp-action="OrderByFieldIndex" type="submit">
+                                            @Model.AdditionalFieldsNames[i]
+                                        </button>
+                                    }
+                                    <input type="hidden" id="fieldIndex" name="index" value="" />
+                                }
+
+                            </div>
+                        </li>
+                    </ul>
+                    <input class="form-control mr-sm-2" type="search" value="" name="searchString"
+                           placeholder="@Localizer["Search by name"]" aria-label="Search">
+                    <button asp-action="SearchByName" class="btn btn-outline-dark my-3 my-sm-1" type="submit">
+                        <img src="~/bootstrap-icons/icons/search.svg" />
+                    </button>
+                </div>
+            </nav>
+        }
         <input id="selectAll" value="1" type="checkbox"> @Localizer["Select all"]
         <div class="card-columns">
             @{
@@ -116,7 +119,7 @@
             }
         </div>
     </form>
-    </div>
-    @section Scripts{
-        <script src="~/js/checkboxes.js"></script>
-    }
+</div>
+@section Scripts{
+    <script src="~/js/checkboxes.js"></script>
+}

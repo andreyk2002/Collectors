@@ -20,12 +20,19 @@ document.getElementById("sendBtn").addEventListener("click", function (e) {
 hubConnection.start();
 
 function apendMessageToHtml(userName, message) {
+    let chatElement = document.createElement("div");
+    chatElement.classList.add("message");
     let userNameElem = document.createElement("b");
     userNameElem.appendChild(document.createTextNode(userName + ': '));
     let elem = document.createElement("p");
-    elem.appendChild(userNameElem);
-    elem.appendChild(document.createTextNode(message));
+    buildMessage(elem, userNameElem, message, chatElement);
     let firstElem = document.getElementById("chatroom").firstChild;
-    document.getElementById("chatroom").insertBefore(elem, firstElem);
+    document.getElementById("chatroom").insertBefore(chatElement, firstElem);
 }
 
+
+function buildMessage(elem, userNameElem, message, chatElement) {
+    elem.appendChild(userNameElem);
+    elem.appendChild(document.createTextNode(message));
+    chatElement.appendChild(elem);
+}

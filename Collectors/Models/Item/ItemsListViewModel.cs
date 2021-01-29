@@ -25,5 +25,6 @@ namespace Collectors.Models
         public List<CollectionItem> Items { get; set; }
         public List<string> AdditionalFieldsNames { get; set; }
         public List<int> AdditionalFieldsIndexes { get; set; }
+        public bool ViewedByCreator { get; set; }
     }
 }

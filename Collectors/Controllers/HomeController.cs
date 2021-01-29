@@ -50,7 +50,7 @@ namespace Collectors.Controllers
 
         public IActionResult Search(string searchString)
         {
-            var results = _dbManager.FindAll(searchString);
+            List<ItemModel>results = _modelHelper.GetItemsByString(searchString);
             ViewBag.searchString = searchString;
             return View(results.ToList());
         }
