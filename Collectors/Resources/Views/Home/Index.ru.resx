@@ -126,4 +126,7 @@
   <data name="Message" xml:space="preserve">
     <value>Добро пожаловать!</value>
   </data>
+  <data name="View items" xml:space="preserve">
+    <value>Просмотреть элементы</value>
+  </data>
 </root>

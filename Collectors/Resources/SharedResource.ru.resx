@@ -126,11 +126,26 @@
   <data name="Add some tags for your item" xml:space="preserve">
     <value>Добавить тэги для элемента</value>
   </data>
+  <data name="Alcohol" xml:space="preserve">
+    <value>Алкоголь</value>
+  </data>
+  <data name="Banknotes" xml:space="preserve">
+    <value>Банкноты</value>
+  </data>
+  <data name="Books" xml:space="preserve">
+    <value>Книги</value>
+  </data>
+  <data name="Cards" xml:space="preserve">
+    <value>Карточки</value>
+  </data>
   <data name="Change" xml:space="preserve">
     <value>Применить изменения</value>
   </data>
   <data name="choose a tags for your item" xml:space="preserve">
     <value>Выберите теги для элемента</value>
+  </data>
+  <data name="Coins" xml:space="preserve">
+    <value>Монеты</value>
   </data>
   <data name="Confirm new password" xml:space="preserve">
     <value>Повторите новый пароль</value>
@@ -174,6 +189,9 @@
   <data name="Looks good!" xml:space="preserve">
     <value>Тут всё верно!</value>
   </data>
+  <data name="Magazines" xml:space="preserve">
+    <value>Журналы</value>
+  </data>
   <data name="ManageAccount" xml:space="preserve">
     <value>Управление аккаунтом</value>
   </data>
@@ -204,6 +222,12 @@
   <data name="Sent" xml:space="preserve">
     <value>Отправить</value>
   </data>
+  <data name="Sneakers" xml:space="preserve">
+    <value>Кроссовки</value>
+  </data>
+  <data name="Stampts" xml:space="preserve">
+    <value>Марки</value>
+  </data>
   <data name="Tags" xml:space="preserve">
     <value>Тэги</value>
   </data>
@@ -212,6 +236,9 @@
   </data>
   <data name="User name" xml:space="preserve">
     <value>Имя пользователя</value>
+  </data>
+  <data name="Vinyl" xml:space="preserve">
+    <value>Виниловые пластинки</value>
   </data>
   <data name="write tags here" xml:space="preserve">
     <value>вводите тэги здесь</value>
