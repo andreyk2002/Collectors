@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization;
 @using Collectors.Data.Classes;
 @using Markdig;
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 @inject IViewLocalizer Localizer;
 @model Collection
 <div class="img">
@@ -47,7 +48,10 @@
 
                         </form>
                         <div class="card-body">
-                            <h5 class="card-title">Theme : @Enum.GetValues(typeof(CollectionTheme)).GetValue(element.ThemeId);</h5>
+                            <h4 class="card-title">
+                                @SharedLocalizer[Enum.GetValues(typeof(CollectionTheme))
+                                                   .GetValue(element.ThemeId).ToString()]
+                            </h4>
                             @Html.Raw(Markdown.ToHtml(element.ShortDescription))
                         </div>
                     </div>

@@ -11,14 +11,14 @@
     <form method="post" class="needs-validation" novalidate>
         <input asp-for="@Model.Tags" id="tags" value="@string.Join(',',ViewBag.Tags)" type="hidden" />
         <input asp-for="CollectionId" value="@Model.CollectionId" type="hidden" />
-        <input name="itemId" value="@ViewBag.Item.Id" type="hidden" />
+        <input name="itemId" value="@Model.ItemId" type="hidden" />
         <div class="form-row white">
             <div class="col-md-4 mb-3">
                 <label>
                     @SharedLocalizer["Item name"]:
                 </label>
                 <input asp-for="@Model.Name" type="text" class="form-control" id="validationCustom01"
-                       placeholder="@SharedLocalizer["Item name"]" value="@ViewBag.Item.Name" required />
+                       placeholder="@SharedLocalizer["Item name"]" value="@Model.Name" required />
                 <div class="valid-feedback">
                     @SharedLocalizer["Looks good!"]
                 </div>
@@ -26,7 +26,7 @@
             <div class="col-md-8 mb-3">
                 <label for="validationCustomTags">@SharedLocalizer["Add some tags for your item"]</label>
                 <input type="text" class="form-control mb-4 text-left w-100" name="input-custom-dropdown"
-                       placeholder="@SharedLocalizer["write tags here"]" value="@ViewBag.Item.Tags"
+                       placeholder="@SharedLocalizer["write tags here"]" value="@Model.Tags"
                        id="validationCustomTags" aria-describedby="inputGroupPrepend" required />
                 <div class="valid-feedback">
                     @SharedLocalizer["Looks good!"]
@@ -52,12 +52,12 @@
                             {
                                 <input class="form-control m-2"
                                        asp-for="@Model.AdditionalFieldsValues[j]" type="@name"
-                                       value="@fieldManager.GetFieldByIndex(index)" />
+                                       value="@Model.AdditionalFieldsValues[j]" />
                             }
                             else
                             {
                                 <textarea rows="5" cols="40" asp-for="@Model.AdditionalFieldsValues[j]"
-                                          value="@fieldManager.GetFieldByIndex(index)" class="form-control m-2">
+                                          value="@Model.AdditionalFieldsValues[j]" class="form-control m-2">
                                 </textarea>
                             }
                             <input type="hidden" value="@index" asp-for="AdditionalFieldsIndexes" />

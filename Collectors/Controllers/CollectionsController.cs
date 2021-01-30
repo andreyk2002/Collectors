@@ -38,6 +38,12 @@ namespace Collectors.Controllers
             return View();
         }
 
+        public IActionResult ViewAll()
+        {
+            var collections = dbManager.Db.Collections;
+            return View(collections.ToList());
+        }
+
         public IActionResult Create()
         {
             return View();

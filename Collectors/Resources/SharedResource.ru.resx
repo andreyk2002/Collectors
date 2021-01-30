@@ -129,11 +129,17 @@
   <data name="Alcohol" xml:space="preserve">
     <value>Алкоголь</value>
   </data>
+  <data name="All collections" xml:space="preserve">
+    <value>Все коллекции</value>
+  </data>
   <data name="Banknotes" xml:space="preserve">
     <value>Банкноты</value>
   </data>
   <data name="Books" xml:space="preserve">
     <value>Книги</value>
+  </data>
+  <data name="can't be empty" xml:space="preserve">
+    <value>должно быть заполнено</value>
   </data>
   <data name="Cards" xml:space="preserve">
     <value>Карточки</value>
@@ -173,6 +179,9 @@
   </data>
   <data name="External logins" xml:space="preserve">
     <value>Подключенные аккаунты</value>
+  </data>
+  <data name="Field" xml:space="preserve">
+    <value>Поле</value>
   </data>
   <data name="Finish" xml:space="preserve">
     <value>Готово</value>
@@ -236,6 +245,9 @@
   </data>
   <data name="User name" xml:space="preserve">
     <value>Имя пользователя</value>
+  </data>
+  <data name="View items" xml:space="preserve">
+    <value>Просмотреть элементы</value>
   </data>
   <data name="Vinyl" xml:space="preserve">
     <value>Виниловые пластинки</value>

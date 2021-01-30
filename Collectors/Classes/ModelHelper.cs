@@ -74,25 +74,30 @@ namespace Collectors.Classes
             List<ItemModel> model = new List<ItemModel>();
             foreach (var element in result)
             {
-                int likesForItem = DbManager.GetLikesForItem(element.Item);
-                model.Add(GetItemModel(element.Collection, element.Item, likesForItem));
+                model.Add(GetItemModel(element.Collection, element.Item));
             }
             return model;
         }
 
+        public ItemModel GetItemModel(int ItemId)
+        {
+            CollectionItem item = DbManager.GetItem(ItemId);
+            Collection c = DbManager.GetCollectionById(item.CollectionId);
+            return GetItemModel(c, item);
+        }
 
-        private ItemModel GetItemModel(Collection c, CollectionItem i, int likes)
+        public ItemModel GetItemModel(Collection c, CollectionItem item)
         {
             ItemModel model = new ItemModel
             {
-                Likes = likes,
-                ItemId = i.Id,
-                Name = i.Name,
-                Tags = i.Tags,
+                Likes = DbManager.GetLikesForItem(item),
+                ItemId = item.Id,
+                Name = item.Name,
+                Tags = item.Tags,
                 AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask)
             };
             model.AdditionalFieldsNames = GetFieldsNames(c, model.AdditionalFieldsIndexes);
-            model.AdditionalFieldsValues = GetFieldsValues(model.AdditionalFieldsIndexes, i);
+            model.AdditionalFieldsValues = GetFieldsValues(model.AdditionalFieldsIndexes, item);
             return model;
         }
 

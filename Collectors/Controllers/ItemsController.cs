@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace Collectors.Controllers
 {
-    [Authorize(Roles = "admin,user")]
     public partial class ItemsController : Controller
     {
         private readonly AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();
@@ -61,31 +60,17 @@ namespace Collectors.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DeleteAsync(ItemsListViewModel model)
+        public IActionResult Delete(int itemId)
         {
-            if (!await CheckAcess(model))
-                return Forbid();
-            var items = dbManager.GetItemsInCollection(model.CollectionId);
-            for (int i = 0; i < items.Count; i++)
-                if (model.Selected[i])
-                    dbManager.RemoveItem(items[i]);
-            return Redirect("Index?id=" + model.CollectionId);
+            CollectionItem item = dbManager.GetItem(itemId);
+            dbManager.RemoveItem(item);            
+            return Redirect("Index?id=" + item.CollectionId);
         }
-        public async Task<IActionResult> EditAsync(ItemsListViewModel model)
+        public IActionResult Edit(int itemId)
         {
-            if (!await CheckAcess(model))
-                return Forbid();
+            var model = modelHelper.GetItemModel(itemId);
             ViewBag.Tags = dbManager.GetTagsFromServer();
-            var items = dbManager.GetItemsInCollection(model.CollectionId);
-            for (int i = 0; i < items.Count; i++)
-            {
-                if (model.Selected[i])
-                {
-                    ViewBag.Item = items[i];
-                    return View(modelHelper.GetItemModel(model));
-                }
-            }
-            return Redirect("Index?id=" + model.CollectionId);
+            return View(model);
         }
 
         [HttpPost]
@@ -97,7 +82,7 @@ namespace Collectors.Controllers
             item.Name = ia.Name;
             item.Tags = ia.Tags;
             dbManager.Save();
-            return Redirect("Index?id=" + ia.CollectionId);
+            return Redirect("Index?id=" + item.CollectionId);
         }
         public async Task<IActionResult> OrderByIdAsync(ItemsListViewModel model)
         {
@@ -137,7 +122,8 @@ namespace Collectors.Controllers
         {
             Collection c = dbManager.GetCollectionById(ia.CollectionId);
             IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
-            return currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString());
+            return currentUser != null && 
+                (currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString()));
         }
 
         private static bool RequireSort(int id)

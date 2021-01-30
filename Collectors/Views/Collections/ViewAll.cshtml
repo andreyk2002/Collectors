@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Collectors.Data.Classes;
+@using Markdig;
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+<div class="img">
+    <img src="~/img/8-TRACK-COLLECTION.jpg" alt="Snow" style="width:100%;">
+    <div class="centered">
+        <h1 class="big-header">@SharedLocalizer["All collections"]</h1>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="align-content-center">
+        <div class="card-columns">
+            @{
+                foreach (var element in Model)
+                {
+                    <div class="card m-3 d-inline-block p-1 bg-info">
+                        <form>
+                            <input class="btn-info" name="Id" value="@element.Id" type="hidden" />
+                            <button class="btn-success" type="submit" asp-action="Index" asp-controller="Items">
+                                <img src="~/bootstrap-icons/icons/eye.svg" />
+                            </button>
+                        </form>
+                        @if (element.Image != null)
+                        {
+                            <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(element.Image))"
+                                 alt="@SharedLocalizer["View items"]" />
+                        }
+                        else
+                        {
+                            <img class="card-img-top" src="~/img/blank.jfif" alt="@SharedLocalizer["View items"]" />
+                        }
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                @SharedLocalizer[Enum.GetValues(typeof(CollectionTheme))
+                                                   .GetValue(element.ThemeId).ToString()]
+                            </h4>
+                            @Html.Raw(Markdown.ToHtml(element.ShortDescription))
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+

@@ -40,8 +40,6 @@ namespace Collectors.Controllers
             IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser != null)
             {
-                if (!HasRole(currentUser))
-                    await _userManager.AddToRoleAsync(currentUser, UserRoles.user.ToString());
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
             }
             StartModel model = _modelHelper.MakeStartModel();
