@@ -37,7 +37,12 @@
                     <li>
                         <partial name="_SelectLanguagePartial" />
                     </li>
+                    <li class="m-2">
+                        <span class="dark-toggle-label text-light">Dark Mode</span>
+                        <input id="dark-toggle" class="dark-toggle-checkbox" type="checkbox" onclick="darkmode.toggle();">
+                    </li>
                 </ul>
+                
                 <partial name="_LoginPartial" />
                 <form class="form-inline my-2 my-lg-0">
                     <input id="searchInput" name="searchString" class="form-control mr-sm-2" type="search" placeholder=@Localizer["Search"]
@@ -60,10 +65,6 @@
             &copy; 2020 - Collectors - <a asp-area="" asp-controller="Home" asp-action="Privacy">
                 @Localizer["Privacy"]
             </a>
-            <label class="dark-toggle ml-4">
-                <input id="dark-toggle" class="dark-toggle-checkbox" type="checkbox" onclick="darkmode.toggle();">
-                <span class="dark-toggle-label">Dark Mode</span>
-            </label>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

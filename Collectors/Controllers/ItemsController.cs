@@ -25,15 +25,13 @@ namespace Collectors.Controllers
         public ItemsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
-            dbManager = new DbManager { Db = context};
+            dbManager = new DbManager { Db = context };
             modelHelper = new ModelHelper { DbManager = dbManager };
         }
 
         public async Task<IActionResult> IndexAsync(int id)
         {
             ItemsListViewModel model;
-            if (RequireSort(id))
-                return View(GetSortedItems());
             Collection c = dbManager.GetCollectionById(id);
             model = modelHelper.GetItemsListModel(c);
             model.ViewedByCreator = await CheckAcess(model);
@@ -52,12 +50,6 @@ namespace Collectors.Controllers
             var model = modelHelper.GetItemsListModel(c);
             model.ViewedByCreator = await CheckAcess(model);
             return View(model);
-        }   
-
-        public ItemsListViewModel GetSortedItems()
-        {
-            var items =  TempDataExtensions.Get<ItemsListViewModel>(TempData, "Items");
-            return items ?? new ItemsListViewModel();
         }
 
         public async Task<IActionResult> AddAsync(ItemsListViewModel il)
@@ -86,11 +78,13 @@ namespace Collectors.Controllers
             ViewBag.Tags = dbManager.GetTagsFromServer();
             var items = dbManager.GetItemsInCollection(model.CollectionId);
             for (int i = 0; i < items.Count; i++)
+            {
                 if (model.Selected[i])
                 {
                     ViewBag.Item = items[i];
                     return View(modelHelper.GetItemModel(model));
                 }
+            }
             return Redirect("Index?id=" + model.CollectionId);
         }
 
@@ -105,44 +99,40 @@ namespace Collectors.Controllers
             dbManager.Save();
             return Redirect("Index?id=" + ia.CollectionId);
         }
-        public IActionResult OrderById(ItemsListViewModel model)
+        public async Task<IActionResult> OrderByIdAsync(ItemsListViewModel model)
         {
             model.Items = dbManager.GetSortedById(model.CollectionId);
-            PutItemsListModel(model);
-            return Redirect("Index");
+            model.ViewedByCreator = await CheckAcess(model);
+            return View("Index", model);
         }
-        public IActionResult OrderByName(ItemsListViewModel model)
+        public async Task<IActionResult> OrderByNameAsync(ItemsListViewModel model)
         {
             model.Items = dbManager.GetSortedByName(model.CollectionId);
-            PutItemsListModel(model);
-            return Redirect("Index");
+            model.ViewedByCreator = await CheckAcess(model);
+            return View("Index", model);
         }
-        public IActionResult OrderByTags(ItemsListViewModel model)
+        public async Task<IActionResult> OrderByTagsAsync(ItemsListViewModel model)
         {
             model.Items = dbManager.GetSortedByTags(model.CollectionId);
-            PutItemsListModel(model);
-            return Redirect("Index");
+            model.ViewedByCreator = await CheckAcess(model);
+            return View("Index", model);
         }
 
-        public IActionResult OrderByFieldIndex(ItemsListViewModel model, int index)
+        public async Task<IActionResult> OrderByFieldIndexAsync(ItemsListViewModel model, int index)
         {
             model.Items = dbManager.
                 GetSortBy(model.CollectionId, model.AdditionalFieldsIndexes[index]);
-            PutItemsListModel(model);
-            return Redirect("Index");
+            model.ViewedByCreator = await CheckAcess(model);
+            return View("Index", model);
         }
 
-        public IActionResult SearchByName(ItemsListViewModel model, string searchString)
+        public async Task<IActionResult> SearchByNameAsync(ItemsListViewModel model, string searchString)
         {
             model.Items = dbManager.SearchByName(model.CollectionId, searchString);
-            PutItemsListModel(model);
-            return Redirect("Index");
-        }
-        public void PutItemsListModel(ItemsListViewModel model)
-        {
-            TempDataExtensions.Put(TempData, "Items", model);
-        }
+            model.ViewedByCreator = await CheckAcess(model);
+            return View("Index", model);
 
+        }
         private async Task<bool> CheckAcess(ItemsListViewModel ia)
         {
             Collection c = dbManager.GetCollectionById(ia.CollectionId);
