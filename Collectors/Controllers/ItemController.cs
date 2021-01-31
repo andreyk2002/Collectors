@@ -16,16 +16,16 @@ namespace Collectors.Controllers
     [Authorize(Roles = "admin,user")]
     public class ItemController : Controller
     {
-        private readonly DbManager DbManager;
+        private readonly DbManager _dbManager;
 
         public ItemController(ApplicationDbContext context)
         {
-            DbManager = new DbManager { Db = context };
+            _dbManager = new DbManager { Db = context };
         }
 
         public IActionResult Index(long id)
         {   
-            return View(DbManager.GetCommentsById(id));
+            return View(_dbManager.GetCommentsById(id));
         }
 
     }

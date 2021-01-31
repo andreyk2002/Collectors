@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,27 +19,25 @@ namespace Collectors.Controllers
     [Authorize(Roles = "admin,user")]
     public class CollectionsController : Controller
     {
-        private readonly DbManager dbManager;
-        private readonly IWebHostEnvironment webHost;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly DbManager _dbManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CollectionsController(ApplicationDbContext context, IWebHostEnvironment webHost, UserManager<IdentityUser> userManager)
+        public CollectionsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            this.userManager = userManager;
-            dbManager = new DbManager { Db = context };
-            this.webHost = webHost;
+            this._userManager = userManager;
+            _dbManager = new DbManager { Db = context };
         }
         public IActionResult Index()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.Collections = User.IsInRole(UserRoles.admin.ToString()) ?
-             dbManager.Db.Collections : dbManager.GetCollectionByUserId(id);
+             _dbManager.Db.Collections : _dbManager.GetCollectionByUserId(id);
             return View();
         }
 
         public IActionResult ViewAll()
         {
-            var collections = dbManager.Db.Collections;
+            var collections = _dbManager.Db.Collections;
             return View(collections.ToList());
         }
 
@@ -55,23 +52,23 @@ namespace Collectors.Controllers
             Collection collection = CreateCollectionFromModel(model);
             collection.SelectedFieldsMask = CreateMaskOfSelectedFields(model.AdditionalFields);
             SetCollectionImageInBytes(model.Image, collection);
-            dbManager.AddCollection(collection);
+            _dbManager.AddCollection(collection);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            Collection c = dbManager.GetCollectionById(id);
-            if (!await CheckUserAsync(c))
+            Collection c = _dbManager.GetCollectionById(id);
+            if (!await CheckUserAsync(_userManager, c))
                 return Forbid();
-            dbManager.RemoveCollection(c);
+            _dbManager.RemoveCollection(c);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> EditAsync(int id)
         {
-            Collection c = dbManager.GetCollectionById(id);
-            if (! await CheckUserAsync(c))
+            Collection c = _dbManager.GetCollectionById(id);
+            if (!await CheckUserAsync(_userManager,c))
                 return Forbid();
             return View(new CollectionEditModel
             {
@@ -84,15 +81,14 @@ namespace Collectors.Controllers
         [HttpPost]
         public IActionResult Edit(CollectionEditModel collection)
         {
-            Collection c = dbManager.GetCollectionById(collection.CollectionId);
+            Collection c = _dbManager.GetCollectionById(collection.CollectionId);
             ChangeImage(collection, c);
             c.ShortDescription = collection.ShortDescription;
-            dbManager.Save();
-
+            _dbManager.Save();
             return RedirectToAction("Index");
         }
 
-        public async Task<bool> CheckUserAsync(Collection c)
+        public async Task<bool> CheckUserAsync(UserManager<IdentityUser> userManager, Collection c)
         {
             IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
             return currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString());
@@ -137,7 +133,7 @@ namespace Collectors.Controllers
             }
         }
 
-      
+
     }
 }
 

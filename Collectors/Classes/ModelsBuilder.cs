@@ -1,24 +1,19 @@
-﻿using Collectors.Areas.Identity.Data;
-using Collectors.Classes;
-using Collectors.Data;
-using Collectors.Data.Classes;
+﻿using Collectors.Data.Classes;
 using Collectors.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Collectors.Classes
 {
-    [Authorize(Roles = "admin,user")]
-    public class ModelHelper
+    public class ModelsBuilder
     {
         public const int DefualtCollectionsCount = 3;
         public const int DefaultItemsCount = 5;
         public DbManager DbManager { get; set; }
         public UserManager<IdentityUser> UserManager { get; set; }
-
         public ItemModel GetItemModel(ItemsListViewModel il)
         {
             return new ItemModel
@@ -30,7 +25,8 @@ namespace Collectors.Classes
         }
         public ItemsListViewModel GetItemsListModel(Collection c)
         {
-            List<CollectionItem> items = DbManager.GetItemsInCollection(c.Id);
+            List<CollectionItem> items = DbManager.GetItemsByCollectionId(c.Id)
+                .ToList();
             ItemsListViewModel model = MakeModel(c.Id, c, items);
             return model;
         }
@@ -44,39 +40,22 @@ namespace Collectors.Classes
             return model;
         }
 
-
         public StartModel MakeStartModel()
         {
-            StartModel model = new StartModel();
-            model.Tags = DbManager.GetTagsFromServer();
-            model.LatestItems = GetLatestItems(DefaultItemsCount);
-            model.BiggestCollections = DbManager.GetBiggestCollections(DefualtCollectionsCount);
+            StartModel model = new StartModel
+            {
+                Tags = DbManager.GetTagsFromServer(),
+                LatestItems = GetLatestItems(DefaultItemsCount),
+                BiggestCollections = DbManager.GetBiggestCollections(DefualtCollectionsCount)
+            };
             return model;
         }
 
-        internal List<ItemModel> GetItemsByString(string searchString)
+        public List<ItemModel> SearchItems(string searchString)
         {
             var itemsWithCollections = DbManager.GetItemsWithCollections();
             var result = DbManager.FindItems(searchString, itemsWithCollections);
             return GetItemModels(result);
-        }
-
-        private List<ItemModel> GetLatestItems(int itemsCount)
-        {
-            var result = DbManager.GetItemsWithCollections()
-                .Take(itemsCount)
-                .ToList();
-            return GetItemModels(result);
-        }
-
-        private List<ItemModel> GetItemModels(List<ItemCollection> result)
-        {
-            List<ItemModel> model = new List<ItemModel>();
-            foreach (var element in result)
-            {
-                model.Add(GetItemModel(element.Collection, element.Item));
-            }
-            return model;
         }
 
         public ItemModel GetItemModel(int ItemId)
@@ -88,47 +67,80 @@ namespace Collectors.Classes
 
         public ItemModel GetItemModel(Collection c, CollectionItem item)
         {
-            ItemModel model = new ItemModel
-            {
-                Likes = DbManager.GetLikesForItem(item),
-                ItemId = item.Id,
-                Name = item.Name,
-                Tags = item.Tags,
-                AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask)
-            };
+            ItemModel model = GetBasicItemModel(c, item);
+            model.AdditionalFieldsIndexes = IndexesFromMask(c.SelectedFieldsMask);
             model.AdditionalFieldsNames = GetFieldsNames(c, model.AdditionalFieldsIndexes);
             model.AdditionalFieldsValues = GetFieldsValues(model.AdditionalFieldsIndexes, item);
             return model;
         }
 
-        private List<string> GetFieldsValues(List<int> additionalFieldsIndexes, CollectionItem item)
+        private ItemModel GetBasicItemModel(Collection c, CollectionItem item)
+        {
+            return new ItemModel
+            {
+                Likes = DbManager.GetLikesForItem(item),
+                ItemId = item.Id,
+                Name = item.Name,
+                Tags = item.Tags,
+            };
+        }
+
+
+        public async Task<UserModel> GetUserModel
+            (UserManager<IdentityUser> userManager, IdentityUser user, string role)
+        {
+            return new UserModel
+            {
+                User = user,
+                IsBlocked = await userManager.IsLockedOutAsync(user),
+                Role = role
+            };
+        }
+
+        private List<ItemModel> GetLatestItems(int itemsCount)
+        {
+            var result = DbManager.GetItemsWithCollections()
+                .Take(itemsCount)
+                .ToList();
+            return GetItemModels(result);
+        }
+
+        private List<ItemModel> GetItemModels(List<ItemWithCollection> result)
+        {
+            List<ItemModel> model = new List<ItemModel>();
+            foreach (var element in result)
+                model.Add(GetItemModel(element.Collection, element.Item));
+            return model;
+        }
+
+        public List<string> GetFieldsValues(List<int> additionalFieldsIndexes, CollectionItem item)
         {
             FieldManager manager = new FieldManager(item);
             List<string> fieldsValues = new List<string>();
-            foreach(int i in additionalFieldsIndexes)
+            foreach (int i in additionalFieldsIndexes)
                 fieldsValues.Add(manager.GetFieldByIndex(i));
             return fieldsValues;
         }
-
-        private List<int> IndexesFromMask(int mask)
+        public List<int> IndexesFromMask(int mask)
         {
             List<int> indexes = new List<int>();
-            int i = 15;
+            int index = 15;
             while (mask != 0)
-            {
-                int val = (int)Math.Pow(2, i);
-                if (mask - val >= 0)
-                {
-                    mask -= val;
-                    indexes.Add(i);
-                }
-                i--;
-            }
+                ExtractIndexFromMask(ref mask, indexes, ref index);
             indexes.Reverse();
             return indexes;
         }
-
-        private List<string> GetFieldsNames(Collection c, List<int> indexes)
+        public void ExtractIndexFromMask(ref int mask, List<int> indexes, ref int i)
+        {
+            int indexBin = (int)Math.Pow(2, i);
+            if (mask - indexBin >= 0)
+            {
+                mask -= indexBin;
+                indexes.Add(i);
+            }
+            i--;
+        }
+        public List<string> GetFieldsNames(Collection c, List<int> indexes)
         {
             List<string> result = new List<string>();
             var fields = c.AdditionalItemsFields.Split(',');
@@ -136,6 +148,5 @@ namespace Collectors.Classes
                 result.Add(fields[i]);
             return result;
         }
-
     }
 }

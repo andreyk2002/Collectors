@@ -7,7 +7,7 @@ namespace Collectors.Classes
 {
     public interface IFieldManager
     {
-        void SetFieldByIndex(int index, string s);
-        string GetFieldByIndex(int index);
+        public abstract void SetFieldByIndex(int index, string s);
+        public abstract string GetFieldByIndex(int index);
     }
 }

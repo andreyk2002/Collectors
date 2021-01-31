@@ -7,7 +7,6 @@ namespace Collectors.Classes
 {
     public class AdditionalFieldsSetter
     {
-
         public static void SetByIndexes(ItemModel ia, FieldManager m)
         {
             for (int i = 0; i < ia.AdditionalFieldsIndexes.Count; i++)

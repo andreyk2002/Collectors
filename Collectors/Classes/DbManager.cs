@@ -21,8 +21,8 @@ namespace Collectors.Classes
 
         public void UpdateTags(string tags)
         {
-            string[] t = tags.Split(',');
-            foreach (string tag in t)
+            string[] newTags = tags.Split(',');
+            foreach (string tag in newTags)
                 if (!Db.Tags.Contains(new Tag { Name = tag }))
                     Db.Tags.Add(new Tag { Name = tag });
             Save();
@@ -30,7 +30,12 @@ namespace Collectors.Classes
 
         public void AddComment(string message, string userName, string groupId)
         {
-            Db.Comments.Add(new Comment { UserName = userName, Content = message, ItemId = Int64.Parse(groupId) });
+            Db.Comments.Add(new Comment
+            {
+                UserName = userName,
+                Content = message,
+                ItemId = Int64.Parse(groupId)
+            });
             Save();
         }
 
@@ -55,16 +60,11 @@ namespace Collectors.Classes
             return Db.Items.FirstOrDefault(i => i.Id == itemId);
         }
 
-        public List<CollectionItem> GetItemsInCollection(int id)
-        {
-            return GetItemsByCollectionId(id).ToList();
-        }
-
-        public List<ItemCollection> FindItems(string searchString, IQueryable<ItemCollection>model)
+        public List<ItemWithCollection> FindItems(string searchString, IQueryable<ItemWithCollection> model)
         {
             if (string.IsNullOrEmpty(searchString))
-                return new List<ItemCollection>();
-            var result = MakeSearchQuery(searchString,model);
+                return new List<ItemWithCollection>();
+            var result = MakeSearchQuery(searchString, model);
             return result;
         }
         public List<CollectionItem> GetSortedById(int id)
@@ -74,13 +74,14 @@ namespace Collectors.Classes
 
         public void TryToLike(string userId, long itemId)
         {
-            if (NotLiked(userId, itemId))
+            if (IsNotLiked(userId, itemId))
             {
                 Db.Likes.Add(new Like { ItemId = itemId, UserId = userId });
             }
+            Save();
         }
 
-        public bool NotLiked(string userId, long itemId)
+        public bool IsNotLiked(string userId, long itemId)
         {
             var like = Db.Likes.Where(like => like.UserId == userId && like.ItemId == itemId);
             return like.Count() == 0;
@@ -146,10 +147,10 @@ namespace Collectors.Classes
             Save();
         }
 
-        public IQueryable<ItemCollection> GetItemsWithCollections()
+        public IQueryable<ItemWithCollection> GetItemsWithCollections()
         {
             return Db.Collections.Join(Db.Items, c => c.Id, i => i.CollectionId,
-                (c, i) => new ItemCollection { Item = i, Collection = c })
+                (c, i) => new ItemWithCollection { Item = i, Collection = c })
                 .OrderByDescending(c => c.Item.Id);
         }
 
@@ -164,6 +165,11 @@ namespace Collectors.Classes
             Db.SaveChanges();
         }
 
+        public IQueryable<CollectionItem> GetItemsByCollectionId(int id)
+        {
+            return Db.Items.Where(i => i.CollectionId == id);
+        }
+
         private static int CompareBySelectedField(int fieldIndex, CollectionItem e1, CollectionItem e2)
         {
             var f1 = new FieldManager(e1).GetFieldByIndex(fieldIndex);
@@ -174,19 +180,16 @@ namespace Collectors.Classes
                 return 1;
             return f1.CompareTo(f2);
         }
-        private IQueryable<CollectionItem> GetItemsByCollectionId(int id)
+
+        private List<ItemWithCollection> MakeSearchQuery(string searchString, IQueryable<ItemWithCollection> model)
         {
-            return Db.Items.Where(i => i.CollectionId == id);
-        }
-        private List<ItemCollection> MakeSearchQuery(string searchString, IQueryable<ItemCollection> model)
-        {
-            List<ItemCollection> results = SearchInItems(searchString, model).ToList();
-            results.AddRange(SearchInComments(searchString,model));
+            List<ItemWithCollection> results = SearchInItems(searchString, model).ToList();
+            results.AddRange(SearchInComments(searchString, model));
             return results.Distinct().ToList();
         }
 
-       
-        private IQueryable<ItemCollection> SearchInComments(string searchString, IQueryable<ItemCollection> model)
+
+        private IQueryable<ItemWithCollection> SearchInComments(string searchString, IQueryable<ItemWithCollection> model)
         {
             return from elements in model
                    join comments in Db.Comments
@@ -195,17 +198,15 @@ namespace Collectors.Classes
                    select elements;
         }
 
-        private IQueryable<ItemCollection> SearchInItems(string searchString, IQueryable<ItemCollection> model)
+        private IQueryable<ItemWithCollection> SearchInItems(string searchString, IQueryable<ItemWithCollection> model)
         {
-            return (from items in model
+            return from items in model
                     where items.Item.Name.Contains(searchString) || items.Item.Tags.Contains(searchString)
                    || items.Item.StringField1.Contains(searchString) || items.Item.StringField2.Contains(searchString)
                    || items.Item.StringField3.Contains(searchString) || items.Item.TextField1.Contains(searchString)
                    || items.Item.TextField2.Contains(searchString) || items.Item.TextField3.Contains(searchString)
                    || items.Collection.ShortDescription.Contains(searchString)
-                    select items
-            ) ;
+                    select items;
         }
-
     }
 }

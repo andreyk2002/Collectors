@@ -21,34 +21,29 @@ namespace Collectors.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly DbManager _dbManager;
-        private readonly ModelHelper _modelHelper;
+        private readonly ModelsBuilder _modelHelper;
 
-        public HomeController(ApplicationDbContext db, ILogger<HomeController> logger, 
-            UserManager<IdentityUser> roleManager)
+        public HomeController(ApplicationDbContext db, UserManager<IdentityUser> roleManager)
         {
-            this._dbManager = new DbManager { Db = db };
-            _logger = logger;
+            _dbManager = new DbManager { Db = db };
             _userManager = roleManager;
-            _modelHelper = new ModelHelper { DbManager = _dbManager };
+            _modelHelper = new ModelsBuilder { DbManager = _dbManager };
         }
 
         public async Task<IActionResult> IndexAsync()
         {
             IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser != null)
-            {
                 ViewBag.Role = _userManager.GetRolesAsync(currentUser).Result;
-            }
             StartModel model = _modelHelper.MakeStartModel();
             return View(model);
         }
 
         public IActionResult Search(string searchString)
         {
-            List<ItemModel>results = _modelHelper.GetItemsByString(searchString);
+            List<ItemModel> results = _modelHelper.SearchItems(searchString);
             ViewBag.searchString = searchString;
             return View(results.ToList());
         }
@@ -58,11 +53,8 @@ namespace Collectors.Controllers
             CollectionItem item = _dbManager.GetItem(itemId);
             IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             _dbManager.TryToLike(currentUser.Id, item.Id);
-            _dbManager.Save();
             if (redirectAction == "Search")
-            {
                 return Redirect("Search?searchString=" + searchStr);
-            }
             return Redirect(redirectAction);
         }
 
@@ -92,11 +84,5 @@ namespace Collectors.Controllers
             );
             return LocalRedirect(returnUrl);
         }
-
-        private bool HasRole(IdentityUser currentUser)
-        {
-            return _userManager.GetRolesAsync(currentUser).Result.Count != 0;
-        }
-
     }
 }

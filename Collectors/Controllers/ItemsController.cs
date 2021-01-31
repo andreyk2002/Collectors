@@ -16,23 +16,23 @@ namespace Collectors.Controllers
 {
     public partial class ItemsController : Controller
     {
-        private readonly AdditionalFieldsSetter fieldsSetter = new AdditionalFieldsSetter();
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly DbManager dbManager;
-        private readonly ModelHelper modelHelper;
+        private readonly AdditionalFieldsSetter _fieldsSetter = new AdditionalFieldsSetter();
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly DbManager _dbManager;
+        private readonly ModelsBuilder _modelBuilder;
 
         public ItemsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
-            this.userManager = userManager;
-            dbManager = new DbManager { Db = context };
-            modelHelper = new ModelHelper { DbManager = dbManager };
+            _userManager = userManager;
+            _dbManager = new DbManager { Db = context };
+            _modelBuilder = new ModelsBuilder { DbManager = _dbManager };
         }
 
         public async Task<IActionResult> IndexAsync(int id)
         {
             ItemsListViewModel model;
-            Collection c = dbManager.GetCollectionById(id);
-            model = modelHelper.GetItemsListModel(c);
+            Collection c = _dbManager.GetCollectionById(id);
+            model = _modelBuilder.GetItemsListModel(c);
             model.ViewedByCreator = await CheckAcess(model);
             return View(model);
         }
@@ -42,11 +42,11 @@ namespace Collectors.Controllers
         {
             CollectionItem item = new CollectionItem
             { Name = ia.Name, Tags = ia.Tags, CollectionId = ia.CollectionId };
-            fieldsSetter.SetAdditional(ia, item);
-            dbManager.UpdateTags(ia.Tags);
-            dbManager.AddItem(item);
-            Collection c = dbManager.GetCollectionById(ia.CollectionId);
-            var model = modelHelper.GetItemsListModel(c);
+            _fieldsSetter.SetAdditional(ia, item);
+            _dbManager.UpdateTags(ia.Tags);
+            _dbManager.AddItem(item);
+            Collection c = _dbManager.GetCollectionById(ia.CollectionId);
+            var model = _modelBuilder.GetItemsListModel(c);
             model.ViewedByCreator = await CheckAcess(model);
             return View(model);
         }
@@ -55,80 +55,75 @@ namespace Collectors.Controllers
         {
             if (!await CheckAcess(il))
                 return Forbid();
-            ItemModel model = modelHelper.GetItemModel(il);
-            ViewBag.Tags = dbManager.GetTagsFromServer();
+            ItemModel model = _modelBuilder.GetItemModel(il);
+            ViewBag.Tags = _dbManager.GetTagsFromServer();
             return View(model);
         }
 
         public IActionResult Delete(int itemId)
         {
-            CollectionItem item = dbManager.GetItem(itemId);
-            dbManager.RemoveItem(item);            
+            CollectionItem item = _dbManager.GetItem(itemId);
+            _dbManager.RemoveItem(item);
             return Redirect("Index?id=" + item.CollectionId);
         }
         public IActionResult Edit(int itemId)
         {
-            var model = modelHelper.GetItemModel(itemId);
-            ViewBag.Tags = dbManager.GetTagsFromServer();
+            var model = _modelBuilder.GetItemModel(itemId);
+            ViewBag.Tags = _dbManager.GetTagsFromServer();
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Save(ItemModel ia, int itemId)
         {
-            CollectionItem item = dbManager.GetItem(itemId);
-            fieldsSetter.SetAdditional(ia, item);
-            dbManager.UpdateTags(ia.Tags);
+            CollectionItem item = _dbManager.GetItem(itemId);
+            _fieldsSetter.SetAdditional(ia, item);
+            _dbManager.UpdateTags(ia.Tags);
             item.Name = ia.Name;
             item.Tags = ia.Tags;
-            dbManager.Save();
+            _dbManager.Save();
             return Redirect("Index?id=" + item.CollectionId);
         }
         public async Task<IActionResult> OrderByIdAsync(ItemsListViewModel model)
         {
-            model.Items = dbManager.GetSortedById(model.CollectionId);
+            model.Items = _dbManager.GetSortedById(model.CollectionId);
             model.ViewedByCreator = await CheckAcess(model);
             return View("Index", model);
         }
         public async Task<IActionResult> OrderByNameAsync(ItemsListViewModel model)
         {
-            model.Items = dbManager.GetSortedByName(model.CollectionId);
+            model.Items = _dbManager.GetSortedByName(model.CollectionId);
             model.ViewedByCreator = await CheckAcess(model);
             return View("Index", model);
         }
         public async Task<IActionResult> OrderByTagsAsync(ItemsListViewModel model)
         {
-            model.Items = dbManager.GetSortedByTags(model.CollectionId);
+            model.Items = _dbManager.GetSortedByTags(model.CollectionId);
             model.ViewedByCreator = await CheckAcess(model);
             return View("Index", model);
         }
 
         public async Task<IActionResult> OrderByFieldIndexAsync(ItemsListViewModel model, int index)
         {
-            model.Items = dbManager.
-                GetSortBy(model.CollectionId, model.AdditionalFieldsIndexes[index]);
+            model.Items = _dbManager
+                .GetSortBy(model.CollectionId, model.AdditionalFieldsIndexes[index]);
             model.ViewedByCreator = await CheckAcess(model);
             return View("Index", model);
         }
 
         public async Task<IActionResult> SearchByNameAsync(ItemsListViewModel model, string searchString)
         {
-            model.Items = dbManager.SearchByName(model.CollectionId, searchString);
+            model.Items = _dbManager.SearchByName(model.CollectionId, searchString);
             model.ViewedByCreator = await CheckAcess(model);
             return View("Index", model);
 
         }
         private async Task<bool> CheckAcess(ItemsListViewModel ia)
         {
-            Collection c = dbManager.GetCollectionById(ia.CollectionId);
-            IdentityUser currentUser = await userManager.GetUserAsync(HttpContext.User);
-            return currentUser != null && 
+            Collection c = _dbManager.GetCollectionById(ia.CollectionId);
+            IdentityUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            return currentUser != null &&
                 (currentUser.Id == c.UserId || User.IsInRole(UserRoles.admin.ToString()));
-        }
-
-        private static bool RequireSort(int id)
-        {
-            return id == 0;
         }
     }
 }
