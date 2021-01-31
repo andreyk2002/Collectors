@@ -5,10 +5,11 @@
 .darkmode--activated label {
     color: white;
 }
+
 .darkmode--activated a :hover {
     color: aqua;
 }
 
-.darkmode--activated a{
+.darkmode--activated a {
     color: wheat;
 }

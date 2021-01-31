@@ -1,0 +1,26 @@
+﻿
+
+.container {
+    font-family: 'Balsamiq Sans', cursive;
+}
+
+h1 {
+    font-family: 'Roboto Mono', monospace;
+    font-size:60px;
+}
+
+.form-img{
+    margin-left:100px;
+    margin-bottom:30px;
+}
+
+.content{
+    background-color:beige;
+    border-radius:5px;
+}
+
+@media (max-width: 568px) {
+    .form-img {
+        margin-left: 40px;
+    }
+}

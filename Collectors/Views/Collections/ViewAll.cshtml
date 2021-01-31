@@ -16,7 +16,7 @@
                 foreach (var element in Model)
                 {
                     <div class="card m-3 d-inline-block p-1 bg-info">
-                        <form>
+                        <form class="m-2">
                             <input class="btn-info" name="Id" value="@element.Id" type="hidden" />
                             <button class="btn-success" type="submit" asp-action="Index" asp-controller="Items">
                                 <img src="~/bootstrap-icons/icons/eye.svg" />

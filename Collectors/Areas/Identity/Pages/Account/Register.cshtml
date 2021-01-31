@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Mvc.Localization;
 @inject IViewLocalizer Localizer;
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer;
-
-<div class="container">
+<link href="~/css/signform.css" rel="stylesheet" />
+<div class="container mt-4 pb-4">
     <h1>@SharedLocalizer["Register"]</h1>
 
-    <div class="row white">
-        <div class="col-md-4">
+    <div class="row white content">
+        <div class="col-md-4 p-5">
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <h4>@Localizer["CreateAccount"]</h4>
                 <hr />
@@ -38,33 +38,18 @@
             </form>
         </div>
         <div class="col-md-6 col-md-offset-2">
+            <img src="~/img/signin-image.jpg" class="form-img mt-3" />
             <section>
-                <h4>@Localizer["SocialRegister"].</h4>
-                <hr />
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div>
-                            <p>
-                                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                                for details on setting up this ASP.NET application to support logging in via external services.
-                            </p>
-                        </div>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                            <div>
-                                <p>
-                                    @foreach (var provider in Model.ExternalLogins)
-                                    {
-                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                    }
-                                </p>
-                            </div>
-                        </form>
-                    }
-                }
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var provider in Model.ExternalLogins)
+                            {
+                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                            }
+                        </p>
+                    </div>
+                </form>
             </section>
         </div>
     </div>
