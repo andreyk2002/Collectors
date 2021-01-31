@@ -7,9 +7,6 @@
 }
 @model CheckboxListModel;
     <div class="container">
-        <div>
-            @await Html.PartialAsync("_SelectLanguagePartial")
-        </div>
         <h2> @Localizer["All users"]</h2>
         <form asp-controller="Home" asp-anti-forgery="true">
             <div class="toolbar mb-3" role="toolbar">

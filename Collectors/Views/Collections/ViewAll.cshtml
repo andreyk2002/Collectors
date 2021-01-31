@@ -16,20 +16,14 @@
                 foreach (var element in Model)
                 {
                     <div class="card m-3 d-inline-block p-1 bg-info">
-                        <form class="m-2">
-                            <input class="btn-info" name="Id" value="@element.Id" type="hidden" />
-                            <button class="btn-success" type="submit" asp-action="Index" asp-controller="Items">
-                                <img src="~/bootstrap-icons/icons/eye.svg" />
-                            </button>
-                        </form>
                         @if (element.Image != null)
                         {
                             <img class="card-img-top" src="data:image/jpeg;base64,@(Convert.ToBase64String(element.Image))"
-                                 alt="@SharedLocalizer["View items"]" />
+                                 alt="" />
                         }
                         else
                         {
-                            <img class="card-img-top" src="~/img/blank.jfif" alt="@SharedLocalizer["View items"]" />
+                            <img class="card-img-top" src="~/img/blank.jfif" alt="" />
                         }
                         <div class="card-body">
                             <h4 class="card-title">
@@ -37,8 +31,13 @@
                                                    .GetValue(element.ThemeId).ToString()]
                             </h4>
                             @Html.Raw(Markdown.ToHtml(element.ShortDescription))
+                            <form>
+                                <input class="btn-info" name="Id" value="@element.Id" type="hidden" />
+                                <button class="btn-success" type="submit" asp-action="Index" asp-controller="Items">
+                                    @SharedLocalizer["View items"]
+                                </button>
+                            </form>
                         </div>
-
                     </div>
                 }
             }
