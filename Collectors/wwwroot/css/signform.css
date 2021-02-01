@@ -6,7 +6,7 @@
 
 h1 {
     font-family: 'Roboto Mono', monospace;
-    font-size:60px;
+    font-size:50px;
 }
 
 .form-img{
@@ -14,7 +14,7 @@ h1 {
     margin-bottom:30px;
 }
 
-.content{
+.sign-content{
     background-color:beige;
     border-radius:5px;
 }

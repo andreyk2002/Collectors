@@ -6,9 +6,14 @@
 <ul class="navbar-nav mr-3">
     <li class="nav-item dropdown">
     <li>
-        <a class="nav-link text-light font-weight-bolder mr-2" asp-controller="Collections" asp-action="ViewAll">
-            @Localizer["All collections"]
-        </a>
+
+    <li class="nav-item">
+        <a class="nav-link text-light font-weight-bolder" asp-area="" asp-controller="Home"
+           asp-action="Index">@Localizer["Home"]</a>
+    </li>
+    <a class="nav-link text-light font-weight-bolder mr-2" asp-controller="Collections" asp-action="ViewAll">
+        @Localizer["All collections"]
+    </a>
     </li>
     @if (SignInManager.IsSignedIn(User))
     {

@@ -2,6 +2,7 @@
 using Collectors.Data.Classes;
 using Collectors.Models;
 using Collectors.Models.Comments;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -191,18 +192,16 @@ namespace Collectors.Classes
             return from elements in model
                    join comments in Db.Comments
                    on elements.Item.Id equals comments.ItemId
-                   where comments.Content.Contains(searchString)
+                   where EF.Functions.FreeText(comments.Content, searchString)
                    select elements;
         }
 
         private IQueryable<ItemCollection> SearchInItems(string searchString, IQueryable<ItemCollection> model)
         {
             return (from items in model
-                    where items.Item.Name.Contains(searchString) || items.Item.Tags.Contains(searchString)
-                   || items.Item.StringField1.Contains(searchString) || items.Item.StringField2.Contains(searchString)
-                   || items.Item.StringField3.Contains(searchString) || items.Item.TextField1.Contains(searchString)
-                   || items.Item.TextField2.Contains(searchString) || items.Item.TextField3.Contains(searchString)
-                   || items.Collection.ShortDescription.Contains(searchString)
+                    where EF.Functions.FreeText(items.Item.Name, searchString)
+                   || EF.Functions.FreeText(items.Item.Tags, searchString)
+                   || EF.Functions.FreeText(items.Collection.ShortDescription, searchString)
                     select items
             ) ;
         }

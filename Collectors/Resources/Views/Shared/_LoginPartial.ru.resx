@@ -120,6 +120,9 @@
   <data name="All collections" xml:space="preserve">
     <value>Все коллекции</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>На главную</value>
+  </data>
   <data name="Login" xml:space="preserve">
     <value>Вход</value>
   </data>
